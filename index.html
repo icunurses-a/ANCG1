@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADULT NURSING CARE | 428 Q-Bank</title>
+    <style>
+        :root {
+            --primary: #2563eb; /* Royal Blue */
+            --secondary: #06b6d4; /* Cyan */
+            --accent: #ef4444; /* Alert Red */
+            --success: #22c55e;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--light);
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--white);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 10;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* RGB EFFECT TITLE */
+        h1 { 
+            margin: 0; 
+            font-size: 1.5rem; 
+            font-weight: 900; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            letter-spacing: 1px;
+            
+            /* RGB Gradient Animation */
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; 
+            animation: glowing 20s linear infinite;
+        }
+
+        @keyframes glowing {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mode-badge {
+            background: #f1f5f9;
+            color: var(--dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-exit {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 5px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .btn-exit:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* MAIN LAYOUT */
+        .layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* SIDEBAR (Stats & Pressure) */
+        .sidebar {
+            width: 320px;
+            background: var(--white);
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            z-index: 5;
+        }
+
+        .widget {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .widget-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-val { font-size: 1.25rem; font-weight: 800; color: var(--primary); }
+        .stat-lbl { font-size: 0.7rem; color: #64748b; }
+
+        /* PEER PRESSURE WIDGET */
+        .peer-pressure {
+            border: 2px solid var(--accent);
+            background: #fef2f2;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pressure-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .race-track {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            position: relative;
+            margin: 15px 0 5px 0;
+        }
+
+        .racer {
+            position: absolute;
+            top: -4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .racer.user { background: var(--primary); top: -4px; z-index: 2; }
+        .racer.peer { background: var(--accent); top: -4px; z-index: 1; opacity: 0.8; }
+
+        .pressure-msg {
+            font-size: 0.75rem;
+            color: #dc2626;
+            font-style: italic;
+            margin-top: 8px;
+            text-align: center;
+            min-height: 1.2em;
+        }
+
+        /* QUIZ AREA */
+        .quiz-area {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f1f5f9;
+        }
+
+        .card {
+            background: var(--white);
+            max-width: 800px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .timer-float {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--dark);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .timer-float.active { display: block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .question-meta {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .options-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .option-btn {
+            padding: 1rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            position: relative;
+            color: var(--dark);
+        }
+
+        .option-btn:hover:not(.disabled) {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .option-btn.correct {
+            border-color: var(--success);
+            background: #f0fdf4;
+            color: #15803d;
+        }
+        
+        .option-btn.correct::after {
+            content: "✓";
+            position: absolute;
+            right: 15px;
+            font-weight: bold;
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--accent);
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #cbd5e1; color: var(--dark); }
+        .btn:hover { opacity: 0.9; }
+
+        /* FOOTER COPYRIGHT */
+        .footer-copyright {
+            background: var(--white);
+            color: #64748b;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.75rem;
+            border-top: 1px solid #e2e8f0;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* MODALS */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .modal {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Custom Input Styles */
+        .config-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .config-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .config-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+        
+        .config-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .hidden { display: none !important; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .layout { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e2e8f0; }
+            .quiz-area { overflow: visible; }
+            h1 { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ADULT NURSING CARE</h1>
+        <div class="header-controls">
+            <div id="mode-badge" class="mode-badge">Study Mode</div>
+            <button class="btn-exit" onclick="location.reload()">End Test ✕</button>
+        </div>
+    </header>
+
+    <div class="layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <!-- Peer Pressure Widget -->
+            <div class="widget peer-pressure">
+                <div class="pressure-header">
+                    <span>🔥 COMPETITION</span>
+                    <span id="rank-display">Rank: Avg</span>
+                </div>
+                <div style="font-size:0.8rem; color:#666;">Global Nursing Average vs. You</div>
+                
+                <div class="race-track">
+                    <div id="racer-peer" class="racer peer" style="left: 0%" title="Global Average"></div>
+                    <div id="racer-user" class="racer user" style="left: 0%" title="You"></div>
+                </div>
+                
+                <div class="pressure-msg" id="peer-msg">"Class average is pulling ahead..."</div>
+            </div>
+
+            <!-- Stats Widget -->
+            <div class="widget">
+                <div class="widget-title">Performance</div>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-val" id="score-val">0%</div>
+                        <div class="stat-lbl">Accuracy</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val" id="streak-val">0</div>
+                        <div class="stat-lbl">Streak</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val" id="progress-val">0/428</div>
+                        <div class="stat-lbl">Completed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val" id="remaining-val">428</div>
+                        <div class="stat-lbl">Remaining</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- QUIZ AREA -->
+        <main class="quiz-area">
+            <div class="card">
+                <div id="timer-badge" class="timer-float">60:00</div>
+                <div class="question-meta" id="question-count">Question 1 of 428</div>
+                <div class="question-text" id="question-text">Loading...</div>
+                
+                <div class="options-list" id="options-container">
+                    <!-- Options injected here -->
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="game.prev()">Previous</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="game.next()">Next Question</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- FOOTER COPYRIGHT -->
+    <div class="footer-copyright">
+        © AMER ALSHARIF 2026
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="start-screen" class="overlay">
+        <div class="modal">
+            <h2 style="color: var(--primary); margin-top:0;">ADULT NURSING CARE</h2>
+            <p>428 Comprehensive Questions loaded.</p>
+            
+            <div class="config-box">
+                <label class="config-label">Number of Questions (Max 428):</label>
+                <input type="number" id="config-q-count" class="config-input" value="50" min="1" max="428">
+                
+                <label class="config-label">Exam Timer (Minutes):</label>
+                <input type="number" id="config-timer" class="config-input" value="60" min="1">
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn btn-secondary" onclick="game.start(false)">Study Mode (Relaxed)</button>
+                <button class="btn btn-primary" style="background: var(--accent);" onclick="game.start(true)">Exam Mode (Timer + Pressure)</button>
+            </div>
+            <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 15px;">Exam mode enables strict time limits and aggressive peer comparison.</p>
+        </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="results-screen" class="overlay hidden">
+        <div class="modal">
+            <h2>Session Complete!</h2>
+            <div style="font-size: 3rem; font-weight: 800; color: var(--primary); margin: 1rem 0;" id="final-score">0%</div>
+            <p id="final-msg">Review your weak areas.</p>
+            <button class="btn btn-primary" onclick="location.reload()">Restart Toolkit</button>
+        </div>
+    </div>
+
+<script>
+// --- RAW DATA ---
+const rawTextData = `
+1. What defines epilepsy?  a) A single provoked seizure b) Two or more unprovoked seizures occurring more than 24 hours apart  ✅  c) Any episode of abnormal sensory activity d) A seizure lasting more than 5 minutes 
+2. What is a seizure?  a) Only abnormal motor activity b) Episodes resulting from sudden excessive discharge from cerebral neurons  ✅  c) Always involving the entire brain d) A psychological condition 
+3. Which is NOT a main seizure type?  a) Generalized b) Focal c) Provoked  ✅  d) Unknown onset 
+4. All of the following are causes of seizures EXCEPT:  a) Cerebrovascular disease b) Hypertension (chronic)  ✅  c) Hypoglycemia d) CNS infections 
+5. Which phase may occur without loss of consciousness?  a) Tonic-clonic phase b) Aura phase  ✅  c) Postictal phase d) Epileptic cry 
+6. During a generalized tonic-clonic seizure, what may occur?  a) Only one side of the body reacts b) Incontinence of urine and feces  ✅  c) Patient remains fully conscious d) No muscle rigidity 
+7. In the postictal state, the patient may experience:  a) Euphoria b) Confusion and fatigue  ✅  c) Increased alertness d) Improved memory 
+8. Focal seizures are characterized by:  a) Always involving loss of consciousness b) Motor and/or non-motor symptoms  ✅  c) Never involving the limbs d) Only visual disturbances 
+9. Which diagnostic tool is best for detecting structural brain lesions?  a) EEG b) MRI  ✅  c) Blood glucose test d) SPECT 
+10. What is a key nursing responsibility during a seizure?  a) Restrain the patient b) Observe and document the sequence of events  ✅  c) Insert an oral airway during active convulsions d) Give oral medication immediately 
+11. What should the nurse do during a seizure?  a) Place patient on side-lying position if possible  ✅  b) Insert a spoon into the mouth c) Restrain limbs to prevent injury d) Shout at the patient to stop 
+12. Which action is correct during a seizure?  a) Loosen constrictive clothing  ✅  b) Hold the patient ’ s mouth open c) Pour water on the patient ’ s face d) Leave the patient alone 
+13. The goal of pharmacologic therapy in epilepsy is to:  a) Cure the condition b) Control seizures with minimal side effects  ✅  c) Replace surgery d) Eliminate all medications over time 
+14. Gingival hyperplasia is associated with long-term use of:  a) Gabapentin b) Phenytoin  ✅  c) Levetiracetam d) Valproate 
+15. What does a Vagal Nerve Stimulator (VNS) do?  a) Cures epilepsy permanently b) Delivers electrical signals to the brain via the vagus nerve  ✅  c) Removes brain tumors d) Monitors blood pressure 
+16. The Responsive Neurostimulation System (RNS) works by:  a) Stimulating the heart b) Interrupting brainwave activity before a clinical seizure  ✅  c) Replacing anticonvulsant medications d) Causing temporary amnesia 
+17. A key nursing diagnosis for a patient with epilepsy is:  a) Risk for injury related to seizure activity  ✅  b) Impaired gas exchange c) Fluid volume excess d) Chronic pain 
+18. To reduce fear of seizures, the nurse should encourage:  a) Avoiding all physical activity b) Adherence to prescribed medication regimen  ✅  c) Secrecy about the condition d) Stopping medication if feeling well 
+19. What should a patient with epilepsy carry for emergencies?  a) A written diary b) Medical identification bracelet or card  ✅  c) Extra dose of sedatives d) A flashlight 
+20. Status epilepticus is defined as:  a) A single brief seizure b) Seizures lasting ≥30 minutes without full recovery between attacks  ✅  c) Seizures only during sleep d) Focal seizures without impairment 
+21. A precipitating factor for status epilepticus is:  a) Regular medication use b) Interruption of anticonvulsant therapy  ✅  c) Mild dehydration d) Normal sleep patterns 
+22. During status epilepticus, priority nursing action includes:  a) Giving oral fluids b) Ensuring airway and oxygenation  ✅  c) Administering IM medication d) Letting the seizure run its course 
+23. Which medication has a risk of Stevens-Johnson syndrome?  a) Phenobarbital b) Lamotrigine  ✅  c) Diazepam d) Carbamazepine 
+24. Which is a dose-related side effect of valproate?  a) Nausea and vomiting  ✅  b) Hepatotoxicity only c) Nephrolithiasis d) Aplastic anemia 
+25. Patients on long-term phenytoin should have regular monitoring for:  a) Gingival hyperplasia and blood dyscrasias  ✅  b) Hearing loss c) Thyroid dysfunction d) Osteoarthritis 
+26. What is Multiple Sclerosis (MS)?  a) A bacterial infection of the CNS b) An immune-mediated, progressive demyelinating disease of the CNS  ✅  c) A genetic disorder affecting muscle tone d) A vascular disorder causing brain hemorrhages 
+27. What is demyelination?  a) Growth of new nerve fibers b) Destruction of the myelin sheath surrounding nerve fibers  ✅  c) Inflammation of the spinal cord d) Formation of plaques in muscles 
+28. Which population is MOST affected by MS?  a) Men over 60 b) Women aged 20–50  ✅  c) Children under 10 d) Equal distribution across all ages 
+29. A key geographic pattern in MS prevalence is:  a) Higher in tropical regions b) Higher in northern colder latitudes  ✅  c) Higher in urban vs. rural areas d) No geographic pattern 
+30. Which is NOT a confirmed risk factor for MS?  a) Obesity in adolescence b) Low vitamin D exposure c) High sugar intake in childhood  ✅  d) Genetic variations 
+31. Which form of MS is characterized by episodes of worsening symptoms followed by recovery?  a) Primary Progressive MS b) Remitting-Relapsing MS (RRMS)  ✅  c) Radiologically Isolated Syndrome d) Progressive-Relapsing MS 
+32. The MOST common initial presentation of MS is:  a) Seizures b) Visual disturbances (e.g., optic neuritis)  ✅  c) Severe headache d) Loss of consciousness 
+33. Which symptom is LEAST likely in MS?  a) Fatigue b) Spasticity c) Diplopia d) Loss of sensation in all cases  ✅  
+34. What is a common cause of pain in MS patients?  a) Muscle hypertrophy b) Lesions on sensory pathways & osteoporosis  ✅  c) Chronic infections d) Vitamin deficiencies 
+35. Emotional lability in MS is due to:  a) Medication side effects b) Loss of control connections between cortex and basal ganglia  ✅  c) Chronic pain d) Sleep deprivation 
+36. The MOST important diagnostic tool for detecting MS plaques is:  a) X-ray b) MRI  ✅  c) Blood test d) Urinalysis 
+37. What does oligoclonal banding in CSF indicate?  a) Bacterial infection b) Immune system abnormality  ✅  c) High glucose levels d) Liver dysfunction 
+38. The primary goal of disease-modifying therapy in MS is to:  a) Cure the disease b) Delay progression and reduce relapse frequency  ✅  c) Replace surgical intervention d) Eliminate all symptoms immediately 
+39. Which medication is administered subcutaneously for RRMS?  a) Oral prednisone b) Glatiramer acetate  ✅  c) IV methylprednisolone d) Mitoxantrone 
+40. A common side effect of interferon-beta therapy is:  a) Hypertension b) Flulike symptoms  ✅  c) Hair loss d) Weight gain 
+41. Which medication is used to manage spasticity in MS?  a) Insulin b) Baclofen  ✅  c) Warfarin d) Metformin 
+42. To minimize fatigue, MS patients should be advised to:  a) Exercise intensely once daily b) Take frequent short rest periods  ✅  c) Avoid all physical activity d) Consume high-caffeine drinks 
+43. A key nursing intervention to prevent falls in MS patients is:  a) Restrict mobility b) Instruct to walk with a wider base of support  ✅  c) Encourage rapid walking d) Avoid using assistive devices 
+44. Which is a non-pharmacologic strategy for bladder dysfunction in MS?  a) Diuretic therapy b) Increased fluid intake & perineal care  ✅  c) Long-term catheterization d) Avoiding all fluids 
+45. When teaching about heat sensitivity, the nurse should advise:  a) Use hot baths for relaxation b) Avoid hot temperatures & extreme cold  ✅  c) Sauna therapy is beneficial d) Exercise in midday sun 
+46. Myasthenia Gravis (MG) is characterized by:  a) Sensory loss and pain b) Weakness of voluntary muscles  ✅  c) Uncontrolled movements d) Memory impairment 
+47. The ocular form of MG primarily presents with:  a) Hearing loss b) Ptosis and diplopia  ✅  c) Limb paralysis d) Speech impairment 
+48. Myasthenic crisis is characterized by:  a) Hypertension and tachycardia b) Severe generalized weakness & respiratory failure  ✅  c) Hyperactive reflexes d) Skin rash and fever 
+49. Bulbar symptoms in MG refer to weakness in:  a) Limbs b) Face, throat, and swallowing muscles  ✅  c) Trunk muscles d) Eye muscles only 
+50. MG affects neurotransmission at the:  a) Synapse between sensory neurons b) Myoneural (neuromuscular) junction  ✅  c) Spinal cord interneurons d) Cerebral cortex 
+51. The edrophonium (Tensilon) test is used to diagnose MG by:  a) Measuring antibody levels b) Observing temporary improvement in muscle strength  ✅  c) Assessing cognitive function d) Testing visual acuity 
+52. Which test involves applying an ice pack to the eyes?  a) MRI scan b) Ice test for ptosis  ✅  c) Lumbar puncture d) Nerve conduction study 
+53. The primary goal of thymectomy in MG is to:  a) Cure the disease permanently b) Reduce antibody production & induce remission  ✅  c) Relieve pain d) Improve vision 
+54. Therapeutic plasma exchange (plasmapheresis) works by:  a) Adding new antibodies b) Removing circulating antibodies  ✅  c) Stimulating nerve growth d) Reducing inflammation in muscles 
+55. Which medication is an anticholinesterase used in MG?  a) Prednisone b) Pyridostigmine  ✅  c) Interferon-beta d) Baclofen 
+56. To minimize aspiration risk, MG patients should:  a) Eat quickly b) Time meals with peak medication effects  ✅  c) Lie down after eating d) Drink thin liquids rapidly 
+57. A key sign of impending respiratory failure in MG is:  a) Increased appetite b) Decreased vital capacity & negative inspiratory force  ✅  c) Elevated blood pressure d) Skin flushing 
+58. For a patient with ptosis, nursing advice includes:  a) Rubbing eyes frequently b) Taping eyelids closed intermittently & using artificial tears  ✅  c) Avoiding all eye care d) Using bright lights 
+59. Energy conservation strategies for MG include:  a) Sleeping less to stay active b) Keeping frequently used items on each floor of the home  ✅  c) Avoiding all planned rest d) Exercising to exhaustion 
+60. Patient education should emphasize avoiding:  a) Regular medication schedule b) Emotional stress and respiratory infections  ✅  c) All social activities d) Protein-rich foods 
+61. A life-threatening complication in both MS and MG is:  a) Mild headache b) Respiratory failure  ✅  c) Weight gain d) Dry skin 
+62. The suicide rate in MS patients is:  a) Lower than general population b) Twice that of the general population  ✅  c) Not associated with depression d) Only in advanced stages 
+63. The role of the Myasthenia Gravis Foundation of America includes:  a) Providing surgical treatment b) Offering support services & education  ✅  c) Manufacturing medications d) Diagnosing patients 
+64. Cognitive changes in MS may require referral to:  a) Cardiologist b) Neuropsychologist  ✅  c) Dermatologist d) Orthopedic surgeon 
+65. A common complication in immobile MS patients is:  a) Improved bone density b) Pressure injuries  ✅  c) Hyperactivity d) Increased muscle mass 
+66. What is another term for an ischemic stroke?  a) Cerebral aneurysm b) Cerebrovascular Accident (CVA) or "Brain Attack"  ✅  c) Subarachnoid hemorrhage d) Transient ischemic attack 
+67. What is the primary cause of an ischemic stroke?  a) Rupture of a blood vessel b) Disruption of blood supply to a part of the brain  ✅  c) Infection of brain tissue d) Traumatic brain injury 
+68. What percentage of strokes are ischemic?  a) 13% b) 50% c) 87%  ✅  d) 25% 
+69. What percentage of strokes are hemorrhagic?  a) 13%  ✅  b) 50% c) 87% d) 30% 
+70. A TIA (Transient Ischemic Attack) typically lasts:  a) 24 hours b) 1 week c) 1-2 hours  ✅  d) 30 minutes 
+71. Which type of ischemic stroke accounts for 20% of cases and is caused by atherosclerotic plaques?  a) Small penetrating artery thrombotic b) Cryptographic c) Large artery thrombotic  ✅  d) Cardiogenic embolic 
+72. Cardiogenic embolic strokes are commonly associated with:  a) Hypertension b) Atrial fibrillation  ✅  c) Diabetes mellitus d) Migraine 
+73. Which type of ischemic stroke has "no known cause"?  a) Large artery thrombotic b) Cryptogenic  ✅  c) Cardiogenic embolic d) Small penetrating artery thrombotic 
+74. What percentage of ischemic strokes are "cryptogenic"?  a) 5% b) 20% c) 30%  ✅  d) 25% 
+75. Small penetrating artery thrombotic strokes account for what percentage of ischemic strokes?  a) 20% b) 25%  ✅  c) 30% d) 5% 
+76. The FAST acronym for stroke assessment stands for:  a) Face, Arm, Speech, Time b) Face, Arm, Speech, Time  ✅  c) Face, Arm, Stability, Time d) Face, Alertness, Speech, Time 
+77. Which of these is NOT a common presenting symptom of ischemic stroke?  a) Hemiplegia b) Aphasia c) Fever  ✅  d) Visual disturbances 
+78. In the early stage of stroke, muscle tone is typically:  a) Spastic b) Flaccid  ✅  c) Normal d) Hypertonic 
+79. Spasticity in stroke patients usually reappears by:  a) 12 hours b) 48 hours  ✅  c) 1 week d) 24 hours 
+80. Homonymous hemianopsia refers to:  a) Double vision b) Blindness in half of the visual field  ✅  c) Complete blindness d) Tunnel vision 
+81. What is dysarthria?  a) Inability to understand language b) Difficulty in speaking  ✅  c) Inability to recognize objects d) Loss of memory 
+82. A patient who cannot express themselves but understands language has:  a) Global aphasia b) Receptive aphasia c) Expressive aphasia  ✅  d) Dysphasia 
+83. Agnosia is:  a) Inability to speak b) Loss of ability to recognize objects through a sensory system  ✅  c) Muscle weakness d) Memory loss 
+84. Apraxia refers to:  a) Language comprehension deficit b) Inability to perform previously learned actions  ✅  c) Visual field defect d) Emotional lability 
+85. Which cognitive function is most likely impaired with frontal lobe damage from stroke?  a) Hearing b) Vision c) Attention span and motivation  ✅  d) Taste sensation 
+86. A patient with left-sided weakness most likely has a stroke in the:  a) Right hemisphere  ✅  b) Left hemisphere c) Brainstem d) Cerebellum 
+87. Aphasia is most commonly associated with stroke in the:  a) Left hemisphere  ✅  b) Right hemisphere c) Both hemispheres equally d) Cerebellum 
+88. Spatial-perceptual deficits are characteristic of stroke in the:  a) Left hemisphere b) Right hemisphere  ✅  c) Brainstem d) Frontal lobe only 
+89. Which behavior is typical of right hemispheric stroke?  a) Slow, cautious behavior b) Impulsive behavior and poor judgment  ✅  c) Excellent self-awareness d) Minimal emotional response 
+90. Left visual field deficit indicates stroke in the:  a) Left eye b) Right hemisphere  ✅  c) Left hemisphere d) Optic nerve 
+91. The initial diagnostic test for suspected stroke is usually:  a) MRI b) Non-contrast CT scan  ✅  c) Lumbar puncture d) Carotid ultrasound 
+92. Which test is used to detect cardiac sources of emboli?  a) Carotid ultrasound b) Echocardiography  ✅  c) EEG d) SPECT scan 
+93. What does the presence of oligoclonal bands in CSF suggest in MS diagnosis?  a) Bacterial infection b) Immune system abnormality  ✅  c) Viral infection d) Normal finding 
+94. The Glasgow Coma Scale assesses:  a) Eye opening, verbal response, motor response  ✅  b) Pupil size, heart rate, blood pressure c) Memory, attention, language d) Muscle strength, coordination, sensation 
+95. Transcranial Doppler is used to assess:  a) Brain tumors b) Cerebral blood flow velocity  ✅  c) Spinal cord function d) Peripheral nerves 
+96. The MOST important modifiable risk factor for stroke is:  a) Diabetes b) Hypertension  ✅  c) Obesity d) Smoking 
+97. The DASH diet is designed to help control:  a) Diabetes b) Hypertension  ✅  c) Cholesterol d) Weight 
+98. Which is a NON-modifiable risk factor for stroke?  a) Smoking b) Advanced age  ✅  c) Obesity d) Sedentary lifestyle 
+99. Low-dose aspirin is used for stroke prevention primarily due to its:  a) Anti-inflammatory effect b) Antiplatelet effect  ✅  c) Analgesic effect d) Antipyretic effect 
+100. Sleep apnea increases stroke risk by contributing to:  a) Diabetes b) Hypertension and hypoxia  ✅  c) Obesity only d) Hypercoagulability 
+101. The time window for administering IV t-PA for ischemic stroke is within:  a) 1 hour of symptom onset b) 3-4.5 hours of symptom onset  ✅  c) 6 hours of symptom onset d) 12 hours of symptom onset 
+102. What is the maximum dose of t-PA?  a) 60 mg b) 90 mg  ✅  c) 120 mg d) 150 mg 
+103. Which blood pressure reading would make a patient INELIGIBLE for t-PA?  a) 140/90 mmHg b) 160/100 mmHg c) 190/110 mmHg  ✅  d) 180/95 mmHg 
+104. After t-PA administration, anticoagulants are withheld for:  a) 6 hours b) 12 hours c) 24 hours  ✅  d) 48 hours 
+105. The most serious side effect of t-PA therapy is:  a) Nausea b) Bleeding  ✅  c) Headache d) Hypertension 
+106. For ischemic stroke patients NOT receiving t-PA, when should antihypertensives be considered?  a) SBP > 180 or DBP > 100 b) SBP > 220 or DBP > 120  ✅  c) SBP > 200 or DBP > 110 d) Any elevated BP 
+107. The optimal head of bed elevation to decrease ICP is:  a) 15 degrees b) 30 degrees  ✅  c) 45 degrees d) 90 degrees 
+108. What is the target blood glucose range in acute stroke management?  a) 80-120 mg/dL b) 140-180 mg/dL  ✅  c) 200-250 mg/dL d) 70-110 mg/dL 
+109. Mannitol is used in stroke management as a(n):  a) Anticoagulant b) Osmotic diuretic to reduce ICP  ✅  c) Thrombolytic d) Antihypertensive 
+110. Hemicraniectomy may be performed for:  a) Carotid stenosis b) Increased ICP from brain edema  ✅  c) Cerebral aneurysm d) Seizure control 
+111. Carotid endarterectomy involves removal of:  a) Brain tumor b) Atherosclerotic plaque from carotid artery  ✅  c) Cerebral aneurysm d) Blood clot from brain 
+112. Carotid endarterectomy is indicated for symptomatic patients with stenosis of:  a) 30-49% b) 70-99%  ✅  c) 100% (complete occlusion) d) Any degree of stenosis 
+113. Post-carotid endarterectomy, priority monitoring includes:  a) Blood glucose b) Neurologic status and blood pressure  ✅  c) Urine output only d) Temperature every 4 hours 
+114. The most serious complication after carotid endarterectomy is:  a) Wound infection b) Stroke  ✅  c) Hypertension d) Hoarseness 
+115. Which patient is BEST suited for carotid endarterectomy?  a) Asymptomatic with 40% stenosis b) Symptomatic with 80% stenosis  ✅  c) Asymptomatic with 60% stenosis d) Symptomatic with 30% stenosis 
+116. What percentage of strokes are hemorrhagic?  a) 5% b) 13%  ✅  c) 25% d) 50% 
+117. The most common cause of primary intracerebral hemorrhage is:  a) Aneurysm rupture b) Uncontrolled hypertension  ✅  c) Trauma d) Anticoagulant use 
+118. Subarachnoid hemorrhage typically results from:  a) Hypertension b) Ruptured intracranial aneurysm  ✅  c) Arteriovenous malformation d) Brain tumor 
+119. Which medication can cause secondary intracerebral hemorrhage?  a) Antibiotics b) Anticoagulants  ✅  c) Antihypertensives d) Antidepressants 
+120. Cerebral amyloid angiopathy is a primary cause of hemorrhage in:  a) Children b) Young adults c) The elderly  ✅  d) All ages equally 
+121. The classic symptom of subarachnoid hemorrhage is:  a) Hemiplegia b) "Worst headache of my life"  ✅  c) Seizure d) Visual loss 
+122. Nuchal rigidity (neck stiffness) is characteristic of:  a) Ischemic stroke b) Subarachnoid hemorrhage  ✅  c) TIA d) All strokes 
+123. Which symptom is MORE common in hemorrhagic vs. ischemic stroke?  a) Aphasia b) Early decreased consciousness  ✅  c) Hemiparesis d) Visual disturbance 
+124. Focal seizures are more likely with:  a) TIA b) Hemorrhagic stroke  ✅  c) Ischemic stroke d) All equally 
+125. Tinnitus and dizziness may accompany hemorrhage in the:  a) Frontal lobe b) Posterior circulation  ✅  c) Brainstem only d) Cerebellum only 
+126. The MOST important diagnostic test for hemorrhagic stroke is:  a) EEG b) CT scan  ✅  c) Lumbar puncture d) Carotid ultrasound 
+127. Cerebral vasospasm typically occurs how many days after hemorrhage?  a) 1-2 days b) 3-14 days  ✅  c) 15-30 days d) Immediately 
+128. Which complication results from blood obstructing CSF flow?  a) Seizures b) Hydrocephalus  ✅  c) Vasospasm d) Re-bleeding 
+129. The most common cause of death after hemorrhagic stroke is:  a) Infection b) Re-bleeding  ✅  c) Seizures d) Cardiac arrest 
+130. Vasospasm can lead to:  a) Improved perfusion b) Cerebral ischemia  ✅  c) Reduced ICP d) Resolution of hemorrhage 
+131. Primary intracerebral hemorrhage is typically:  a) Managed medically, not surgically  ✅  b) Always treated surgically c) Treated with t-PA d) Managed with anticoagulants 
+132. When is surgical evacuation (craniotomy) considered for hemorrhage?  a) Always b) With worsening neurologic exam or increased ICP  ✅  c) Only for small hemorrhages d) Never for elderly patients 
+133. For hemorrhage caused by warfarin, what is administered?  a) t-PA b) Vitamin K and fresh frozen plasma  ✅  c) Heparin d) Aspirin 
+134. DVT prophylaxis after hemorrhagic stroke begins:  a) Immediately b) After 1-4 days if bleeding has stopped  ✅  c) After 1 week d) Never, due to bleeding risk 
+135. Fever in the first 24 hours after stroke is associated with:  a) Better outcomes b) Increased mortality  ✅  c) No effect on outcome d) Reduced cerebral edema 
+136. The MOST important nursing intervention to prevent aspiration is:  a) NPO status b) Positioning and swallowing assessment  ✅  c) Frequent oral care d) Thickened liquids only 
+137. Which is a potential complication of immobility after stroke?  a) Pressure injuries  ✅  b) Hypertension c) Hyperglycemia d) All of the above 
+138. Urinary tract infections are common after stroke due to:  a) Incontinence and catheter use  ✅  b) Excessive fluid intake c) Antibiotic overuse d) Diabetes only 
+139. Depression after stroke is:  a) Rare b) Common  ✅  c) Always temporary d) Unrelated to stroke severity 
+140. Emotional lability after stroke refers to:  a) Depression only b) Rapid mood changes  ✅  c) Lack of emotion d) Anxiety disorders 
+141. Most recovery from ischemic stroke occurs within:  a) 1 month b) 3-6 months  ✅  c) 1 year d) 2 years 
+142. Recovery from hemorrhagic stroke is typically:  a) Faster than ischemic stroke b) Slower with more disability  ✅  c) Similar to ischemic stroke d) Complete in most cases 
+143. The suicide rate in stroke patients is:  a) Lower than general population b) Higher than general population  ✅  c) Same as general population d) Not studied 
+144. Korsakoff's syndrome after stroke may include:  a) Disorientation and hallucinations  ✅  b) Muscle weakness only c) Visual problems only d) Language deficits only 
+145. Family education should emphasize:  a) Complete recovery expectations b) Safety measures and medication management  ✅  c) Avoiding all physical activity d) Isolation to prevent infection 
+146. Which structures are part of the UPPER respiratory tract?  a) Trachea and bronchi b) Nasal cavity, pharynx, and larynx  ✅  c) Bronchioles and alveoli d) Lungs and pleura 
+147. Viral rhinitis (common cold) is characterized by:  a) High fever and severe headache b) Nasal congestion, rhinorrhea, and sore throat  ✅  c) Productive cough with green sputum d) Chest pain and dyspnea 
+148. How long do symptoms of viral rhinitis typically last?  a) 1-2 days b) 1-2 weeks  ✅  c) 3-4 weeks d) 1 month 
+149. Which medication is commonly used for nasal obstruction in rhinitis?  a) Antibiotics b) Oral decongestants  ✅  c) Anticoagulants d) Bronchodilators 
+150. Patient education for allergic rhinitis includes avoiding:  a) All fluids b) Dust, molds, and tobacco smoke  ✅  c) All medications d) Rest and sleep 
+151. Rhinosinusitis involves inflammation of the:  a) Larynx only b) Paranasal sinuses and nasal cavity  ✅  c) Bronchi and bronchioles d) Pharynx and tonsils 
+152. What should patients with acute rhinosinusitis avoid?  a) All medications b) Swimming, diving, and air travel  ✅  c) Drinking fluids d) Warm compresses 
+153. Which complication may result from untreated rhinosinusitis?  a) Kidney failure b) Osteomyelitis  ✅  c) Myocardial infarction d) Liver cirrhosis 
+154. Nursing management for rhinosinusitis includes instructing patients to use:  a) Cold compresses only b) Warm compresses to relieve pressure  ✅  c) Ice packs on the face d) No compresses 
+155. What promotes drainage of sinuses?  a) Humidification of air  ✅  b) Dry air c) Cold air d) Dusty environment 
+156. The most common cause of acute pharyngitis is:  a) Bacterial infection b) Viral infection  ✅  c) Fungal infection d) Allergic reaction 
+157. Which bacterium causes "strep throat"?  a) Staphylococcus aureus b) Group A beta-hemolytic streptococcus (GABHS)  ✅  c) Escherichia coli d) Pseudomonas aeruginosa 
+158. A complication of streptococcal pharyngitis is:  a) Diabetes b) Peritonsillar abscess  ✅  c) Hepatitis d) Pancreatitis 
+159. Which diagnostic test provides rapid results for streptococcal pharyngitis?  a) Blood culture b) Rapid streptococcal antigen test (RSAT)  ✅  c) Throat culture (takes 24-48 hours) d) Chest X-ray 
+160. First-line antibiotic therapy for bacterial pharyngitis is:  a) Tetracycline b) Penicillin  ✅  c) Vancomycin d) Ciprofloxacin 
+161. Tonsils are located in the:  a) Nasopharynx b) Oropharynx  ✅  c) Hypopharynx d) Larynx 
+162. A common symptom of tonsillitis is:  a) Chest pain b) Sore throat and fever  ✅  c) Abdominal pain d) Back pain 
+163. Enlarged adenoids may cause:  a) Mouth-breathing and earache  ✅  b) Visual disturbances c) Hand tremors d) Leg weakness 
+164. Which condition is an indication for tonsillectomy?  a) Single episode of tonsillitis b) Repeated episodes despite antibiotic therapy  ✅  c) Mild throat pain d) Allergic rhinitis 
+165. Immediate postoperative positioning after tonsillectomy is:  a) Supine b) Prone with head turned to side  ✅  c) Sitting upright d) Trendelenburg 
+166. Laryngitis is inflammation of the:  a) Pharynx b) Larynx  ✅  c) Trachea d) Bronchi 
+167. A key symptom of laryngitis is:  a) Productive cough b) Hoarseness or aphonia (loss of voice)  ✅  c) Hemoptysis d) Chest tightness 
+168. Which is a risk factor for laryngitis?  a) Low fluid intake b) Voice abuse and exposure to pollutants  ✅  c) Excessive sleep d) Low-salt diet 
+169. Medical management of laryngitis includes:  a) Voice rest and avoiding irritants  ✅  b) Antibiotics for all cases c) Surgical intervention d) Chemotherapy 
+170. Reflux laryngitis may be treated with:  a) Antihistamines b) Proton pump inhibitors (e.g., omeprazole)  ✅  c) Bronchodilators d) Corticosteroids only 
+171. A priority nursing diagnosis for upper airway infection is:  a) Risk for falls b) Impaired airway clearance  ✅  c) Fluid volume excess d) Sleep deprivation 
+172. Which complication may arise from untreated upper airway infections?  a) Sepsis or meningitis  ✅  b) Bone fracture c) Liver failure d) Anemia 
+173. Nursing interventions to promote comfort include:  a) Encouraging loud talking b) Warm saline gargles  ✅  c) Cold drinks only d) Avoiding all fluids 
+174. To promote communication with laryngitis, the nurse should:  a) Encouraging shouting b) Provide alternative communication methods  ✅  c) Avoid all communication d) Use complex medical terms 
+175. Patient education for URI prevention includes:  a) Avoiding all vaccines b) Hand hygiene and influenza vaccination  ✅  c) Smoking cessation only for elderly d) No need for lifestyle changes 
+176. Epistaxis is hemorrhage from the:  a) Ears b) Nose  ✅  c) Throat d) Lungs 
+177. A risk factor for epistaxis is:  a) Low blood pressure b) Dry nasal mucous membranes  ✅  c) Excessive fluid intake d) Hypoglycemia 
+178. Initial first aid for epistaxis is:  a) Lying supine b) Pinching soft part of nose for 5-10 minutes  ✅  c) Tilting head backward d) Inserting objects into nose 
+179. Correct positioning during epistaxis is:  a) Lying flat b) Sitting upright with head tilted forward  ✅  c) Trendelenburg position d) Prone position 
+180. After epistaxis, patients should avoid:  a) All medications b) Vigorous exercise and hot/spicy foods  ✅  c) Drinking water d) Rest 
+181. Laryngeal obstruction is particularly dangerous because:  a) The larynx is highly flexible b) The larynx is a stiff box that won't stretch  ✅  c) It has abundant blood supply d) It connects to the stomach 
+182. A cause of laryngeal obstruction is:  a) Foreign body or angioedema  ✅  b) Low blood sugar c) Hypertension d) Anemia 
+183. A clinical sign of laryngeal obstruction is:  a) Bradycardia b) Use of accessory muscles for breathing  ✅  c) Hypotension d) Hyperglycemia 
+184. Emergency treatment for obstruction from allergic edema includes:  a) Antihistamines only b) Subcutaneous epinephrine  ✅  c) Antibiotics d) Pain relievers 
+185. What is essential for monitoring in laryngeal obstruction?  a) Blood glucose b) Continuous pulse oximetry  ✅  c) Urine output d) Temperature only 
+186. The most common type of laryngeal cancer is:  a) Adenocarcinoma b) Squamous cell carcinoma  ✅  c) Small cell carcinoma d) Sarcoma 
+187. The strongest risk factor for laryngeal cancer is:  a) Tobacco use  ✅  b) High-fiber diet c) Exercise d) Vitamin supplements 
+188. An early symptom of laryngeal cancer is:  a) Weight gain b) Hoarseness >2 weeks  ✅  c) Productive cough d) Fever 
+189. Which diagnostic procedure uses a flexible scope to view the larynx?  a) Bronchoscopy b) Indirect laryngoscopy  ✅  c) Colonoscopy d) Laparoscopy 
+190. Treatment options for laryngeal cancer include:  a) Surgery, radiation, chemotherapy  ✅  b) Antibiotics only c) Lifestyle changes only d) No treatment available 
+191. Which surgery removes only a portion of the larynx?  a) Total laryngectomy b) Partial laryngectomy  ✅  c) Cordectomy d) Tracheostomy 
+192. Total laryngectomy results in:  a) Temporary voice loss b) Permanent loss of voice  ✅  c) Improved voice quality d) No voice changes 
+193. A priority nursing diagnosis post-laryngectomy is:  a) Risk for constipation b) Impaired airway clearance  ✅  c) Fluid volume excess d) Sleep pattern disturbance 
+194. Which complication may occur after laryngectomy?  a) Aspiration  ✅  b) Kidney stones c) Liver failure d) Osteoporosis 
+195. Nursing interventions include promoting:  a) Oral intake immediately b) Alternative communication methods  ✅  c) Speaking loudly d) Avoiding all communication 
+196. After tonsillectomy, bright red blood in vomit indicates:  a) Normal healing b) Active bleeding  ✅  c) Old blood d) Infection 
+197. A sign of postoperative bleeding after tonsillectomy is:  a) Restlessness and rising pulse  ✅  b) Bradycardia c) Hypotension only d) Hypothermia 
+198. Which is a potential complication after laryngectomy?  a) Tracheostomal stenosis  ✅  b) Improved swallowing c) Enhanced voice d) Decreased mucus 
+199. To prevent wound infection after surgery, nurses should:  a) Avoid all wound care b) Monitor for signs of infection  ✅  c) Use dry dressings only d) Not assess the wound 
+200. Patient education after upper airway surgery includes:  a) Avoiding strenuous activity  ✅  b) Immediate return to work c) Smoking to promote healing d) Ignoring follow-up appointments 
+201. Influenza vaccination is especially recommended for:  a) Elderly and high-risk populations  ✅  b) Only children c) Healthy young adults only d) No specific group 
+202. To prevent URIs, patients should be educated about:  a) Hand hygiene  ✅  b) Avoiding all vaccines c) Sharing personal items d) Smoking cessation only if symptomatic 
+203. A healthy lifestyle for respiratory health includes:  a) Smoking and alcohol b) Avoiding tobacco and irritants  ✅  c) Sedentary lifestyle d) Poor diet 
+204. Regular follow-up after cancer surgery is important to monitor for:  a) Recurrence  ✅  b) Weight gain only c) Improved vision d) Hair growth 
+205. The nurse's role in prevention includes:  a) Patient education  ✅  b) Only administering medications c) Avoiding patient contact d) Not discussing lifestyle 
+206. Pneumonia is defined as:  a) Inflammation of the bronchi b) Inflammation of the lung parenchyma caused by microorganisms  ✅  c) Accumulation of fluid in the pleural space d) Chronic obstructive lung disease 
+207. Which of the following is NOT a type of pneumonia classification?  a) Community-acquired (CAP) b) Health care-associated (HCAP) c) Asthma-associated pneumonia  ✅  d) Ventilator-associated (VAP) 
+208. Pneumonia that is distributed in patchy areas within the bronchi is called:  a) Lobar pneumonia b) Bronchopneumonia  ✅  c) Aspiration pneumonia d) Interstitial pneumonia 
+209. When a substantial portion of one or more lobes is involved, it is called:  a) Lobar pneumonia  ✅  b) Bronchopneumonia c) Atypical pneumonia d) Walking pneumonia 
+210. Pneumonia and influenza were the leading cause of death in the US in 2017 as:  a) First b) Fifth c) Eighth  ✅  d) Tenth 
+211. Pneumonia primarily affects:  a) Only ventilation b) Only diffusion c) Both ventilation and diffusion  ✅  d) Neither ventilation nor diffusion 
+212. An inflammatory reaction in the alveoli produces an exudate that interferes with:  a) Blood pressure regulation b) Diffusion of oxygen and carbon dioxide  ✅  c) Heart rate d) Kidney function 
+213. Which is a common risk factor for pneumonia?  a) Hypertension b) Prolonged immobility  ✅  c) Hyperglycemia d) Visual impairment 
+214. A depressed cough reflex increases pneumonia risk and can be caused by:  a) High fluid intake b) Decreased level of consciousness  ✅  c) Excessive exercise d) High-protein diet 
+215. Which underlying condition is a risk factor for pneumonia?  a) Osteoarthritis b) COPD (Chronic Obstructive Pulmonary Disease)  ✅  c) Migraine d) Psoriasis 
+216. Sudden onset of chills and high fever is typical of:  a) Viral pneumonia b) Streptococcal (pneumococcal) pneumonia  ✅  c) Aspiration pneumonia d) Fungal pneumonia 
+217. Orthopnea refers to:  a) Chest pain with deep breathing b) Shortness of breath when reclining or supine  ✅  c) Coughing up blood d) Excessive sweating 
+218. Rusty, blood-tinged sputum is characteristic of:  a) Viral pneumonia b) Streptococcal, staphylococcal, or Klebsiella pneumonia  ✅  c) Mycoplasma pneumonia d) All pneumonias 
+219. A relative bradycardia may suggest infection with:  a) Mycoplasma or Legionella  ✅  b) Streptococcus c) Staphylococcus d) Pseudomonas 
+220. Which is a LATE sign of hypoxemia in severe pneumonia?  a) Tachypnea b) Central cyanosis (lips/nail beds)  ✅  c) Fever d) Headache 
+221. The most important diagnostic tool for pneumonia is:  a) ECG b) Chest x-ray  ✅  c) Urinalysis d) Liver function tests 
+222. Pneumococcal vaccination is primarily for:  a) Treating active pneumonia b) Preventing pneumonia  ✅  c) Reducing fever d) Improving cough 
+223. Which laboratory test identifies the causative pathogen?  a) Complete blood count b) Sputum culture and sensitivity  ✅  c) Arterial blood gas d) Blood glucose 
+224. Preventive measures for pneumonia include:  a) Hand hygiene and vaccination  ✅  b) Increased sedation c) Supine positioning d) Avoiding all fluids 
+225. For inpatients, IV antibiotics should be switched to oral:  a) After 1 week b) As soon as possible to establish normal GI function  ✅  c) Never d) Only if fever persists 
+226. Severe complications of pneumonia include:  a) Septic shock and respiratory failure  ✅  b) Liver failure and renal calculi c) Bone fractures d) Skin rash 
+227. A pleural effusion is:  a) Infection of the pericardium b) Accumulation of fluid in the pleural space  ✅  c) Blood in the sputum d) Collapse of lung tissue 
+228. Empyema refers to:  a) Clear pleural fluid b) Thick, purulent fluid in the pleural space  ✅  c) Blood in the alveoli d) Mucus in bronchi 
+229. How long may sterilization of an empyema cavity require antibiotics?  a) 1-2 days b) 1 week c) 4-6 weeks  ✅  d) 6 months 
+230. Atelectasis may develop as a complication due to:  a) Overhydration b) Obstruction from lung cancer or mucus plugs  ✅  c) Excessive coughing d) High fever 
+231. A key nursing diagnosis for pneumonia is:  a) Risk for falls b) Impaired airway clearance  ✅  c) Fluid volume excess d) Sleep deprivation 
+232. Which collaborative problem is associated with pneumonia?  a) Hypertension b) Sepsis and septic shock  ✅  c) Diabetes mellitus d) Osteoporosis 
+233. In older adults, pneumonia may present with:  a) Altered mental status and dehydration  ✅  b) Increased energy c) Improved appetite d) No fever 
+234. The Confusion Assessment Method (CAM) is used to screen for:  a) Pain b) Delirium  ✅  c) Anxiety d) Depression 
+235. Delirium in pneumonia may be related to:  a) Hypoxemia and fever  ✅  b) Overeating c) Excessive sleep d) High blood pressure 
+236. To promote rest and breathing, the optimal position is:  a) Prone b) Semi-Fowler's  ✅  c) Trendelenburg d) Supine flat 
+237. Daily fluid intake for pneumonia patients should be at least:  a) 500 mL b) 1 L c) 2 L  ✅  d) 4 L 
+238. Hydration must be managed carefully in patients with:  a) Anemia b) Heart failure  ✅  c) Asthma d) Arthritis 
+239. Small, frequent meals are advised because patients often have:  a) Decreased appetite and fatigue  ✅  b) Excessive hunger c) Nausea only d) Food allergies 
+240. Patient education should include reporting:  a) Mild fatigue b) Difficulty breathing and worsening cough  ✅  c) Slight headache d) Increased appetite 
+241. Patients usually begin responding to antibiotic therapy within:  a) 2-4 hours b) 24-48 hours  ✅  c) 5-7 days d) 2 weeks 
+242. Persistent fever after starting antibiotics may indicate:  a) Medication allergy or resistance  ✅  b) Adequate hydration c) Recovery d) Overmedication 
+243. Failure of pneumonia to resolve may raise suspicion of:  a) Lung cancer  ✅  b) Diabetes c) Hypertension d) Anemia 
+244. After thoracentesis, monitor for:  a) Pneumothorax  ✅  b) Hyperglycemia c) Bradycardia d) Diarrhea 
+245. The nurse assists in administering IV fluids and medications for:  a) Pain management b) Septic shock  ✅  c) Sleep induction d) Appetite stimulation 
+246. Aspiration is defined as:  a) Vomiting b) Inhalation of foreign material into the lungs  ✅  c) Swallowing difficulties d) Gastric reflux 
+247. Aspiration pneumonia accounts for what percentage of CAP?  a) 1-2% b) 5-15%  ✅  c) 25-35% d) 50-60% 
+248. The most common form of aspiration pneumonia is:  a) Chemical pneumonia b) Bacterial infection from upper airway bacteria  ✅  c) Viral pneumonia d) Fungal pneumonia 
+249. Aspiration pneumonia can result from inhaling:  a) Gastric contents  ✅  b) Pure oxygen c) Sterile water d) Medications only 
+250. Death and complications after aspiration depend primarily on:  a) Patient's age b) Volume and character of aspirated contents  ✅  c) Time of day d) Blood type 
+251. If solid food particles are aspirated, the main problem is:  a) Chemical burn b) Mechanical blockage and secondary infection  ✅  c) Immediate heart failure d) Kidney damage 
+252. Acidic gastric juice, if aspirated, is destructive to:  a) Alveoli and capillaries  ✅  b) Heart valves c) Liver cells d) Bone marrow 
+253. Fecal contamination increases mortality because:  a) Endotoxins are absorbed systemically  ✅  b) It causes immediate shock c) It improves oxygenation d) It reduces fever 
+254. A major risk factor for aspiration is:  a) High blood pressure b) Decreased level of consciousness  ✅  c) Hyperactivity d) Good cough reflex 
+255. Esophageal conditions associated with aspiration include:  a) Dysphagia and gastroesophageal reflux  ✅  b) Peptic ulcer c) Gastritis d) Colitis 
+256. The primary goal when caring for patients at risk for aspiration is:  a) Treatment b) Prevention  ✅  c) Observation d) Medication 
+257. Head-of-bed elevation to prevent aspiration should be:  a) 0-15 degrees b) 30-45 degrees  ✅  c) 60-75 degrees d) 90 degrees 
+258. Before initiating tube feeding, confirm:  a) Patient's appetite b) Tip location of the tube  ✅  c) Blood glucose d) Urine output 
+259. For tube feedings, assess gastric residuals:  a) Daily b) Weekly c) Every 4 hours  ✅  d) Only if vomiting occurs 
+260. Acceptable gastric residual volume before next feeding is:  a) <50 mL b) <150 mL  ✅  c) <300 mL d) <500 mL 
+261. Endotracheal tube cuff pressure should be maintained:  a) <10 cm H2O b) 20-30 cm H2O  ✅  c) 40-50 cm H2O d) >60 cm H2O 
+262. Before deflating an ET tube cuff, the nurse should:  a) Administer sedatives b) Perform hypopharyngeal suctioning  ✅  c) Increase oxygen flow d) Feed the patient 
+263. For patients with swallowing dysfunction, a swallowing screen should be performed by:  a) Pharmacist b) Speech therapist  ✅  c) Physical therapist d) Dietitian 
+264. During feeding, patients should be instructed to:  a) Use a straw b) Take small bites and tuck chin  ✅  c) Lie flat d) Drink quickly 
+265. When vomiting, if an airway is in place, it should be:  a) Left in place b) Pulled out to prevent stimulating gag reflex  ✅  c) Pushed further in d) Suctioned through 
+266. Delayed stomach emptying can be caused by:  a) Intestinal obstruction  ✅  b) Excessive water intake c) Low stress levels d) Early ambulation 
+267. Increased gastric secretions during anxiety can lead to:  a) Improved digestion b) Aspiration risk  ✅  c) Reduced appetite d) Weight gain 
+268. Prolonged intubation can depress:  a) Heart rate b) Laryngeal and glottic reflexes  ✅  c) Kidney function d) Liver enzymes 
+269. Patients with prolonged tracheostomies should be encouraged to:  a) Avoid talking b) Phonate and exercise laryngeal muscles  ✅  c) Whisper only d) Not eat 
+270. Silent aspiration may occur when:  a) Patient is coughing b) Non-functioning NG tube allows gastric accumulation  ✅  c) Patient is awake and alert d) Feedings are given slowly 
+271. After pneumonia, fatigue and weakness may be prolonged especially in:  a) Children b) Older adults  ✅  c) Young athletes d) Pregnant women 
+272. The nurse encourages breathing exercises to promote:  a) Sleep b) Secretions clearance and lung expansion  ✅  c) Appetite d) Blood pressure 
+273. Smoking inhibits:  a) Tracheobronchial ciliary action  ✅  b) Heart function c) Kidney filtration d) Liver metabolism 
+274. Patients should be instructed to avoid after pneumonia:  a) Sudden temperature changes and excessive alcohol  ✅  b) All physical activity c) Drinking fluids d) Taking any medications 
+275. Influenza vaccination is important because influenza increases susceptibility to:  a) Secondary bacterial pneumonia  ✅  b) Viral hepatitis c) Kidney infection d) Skin rash 
+276. COPD is best defined as:  a) A reversible airway disease caused by allergies b) A common, preventable, and treatable disease characterized by persistent respiratory symptoms and airflow limitation due to airway/alveolar abnormalities caused by exposure to noxious particles or gases  ✅  c) An infectious disease of the lower respiratory tract d) A genetic disorder only affecting young adults 
+277. Which two conditions most commonly overlap in COPD?  a) Asthma and pneumonia b) Emphysema and chronic bronchitis  ✅  c) Bronchiectasis and tuberculosis d) Atelectasis and pneumothorax 
+278. Chronic bronchitis is defined by:  a) Wheezing for more than 6 months b) Cough and sputum production for at least 3 months over 2 consecutive years  ✅  c) Barrel chest and clubbing d) Hemoptysis and weight loss 
+279. Pathophysiology of chronic bronchitis includes:  a) Destruction of alveoli b) Thickening of bronchial walls, inflammation, excess mucus production, and bronchial narrowing  ✅  c) Formation of bullae in lung parenchyma d) Loss of lung elasticity only 
+280. Emphysema is characterized by:  a) Thickened bronchial walls b) Abnormal distention and destruction of airspaces beyond terminal bronchioles and alveolar walls  ✅  c) Recurrent respiratory infections d) Isolated bronchospasm 
+281. Which type of emphysema primarily destroys the respiratory bronchiole, alveolar duct, and alveolus?  a) Panlobular emphysema  ✅  b) Centrilobular emphysema c) Bullous emphysema d) Paraseptal emphysema 
+282. Centrilobular emphysema is commonly associated with:  a) Weight gain and bradycardia b) Isolated exercise intolerance c) Chronic hypoxemia, hypercapnia, polycythemia, and cor pulmonale  ✅  d) Acute hemoptysis 
+283. The primary risk factor for COPD is:  a) Tobacco smoke exposure (80 – 90% of cases)  ✅  b) Genetic factors only c) Occupational dust exposure alone d) Advanced age without smoking history 
+284. Alpha1-Antitrypsin (AAT) deficiency is recommended to be tested in:  a) All COPD patients over 60 b) Only active smokers c) Patients <45 years, non-/light smokers, or with family history of COPD  ✅  d) Patients with asthma only 
+285. The classic triad of COPD symptoms includes:  a) Chronic cough, sputum production, progressive dyspnea  ✅  b) Fever, chest pain, hemoptysis c) Cyanosis, clubbing, weight gain d) Wheezing, stridor, tachypnea 
+286. A “barrel chest” in COPD is due to:  a) Increased mucus production b) Hyperinflation and loss of lung elasticity  ✅  c) Pneumothorax d) Respiratory muscle hypertrophy only 
+287. Which diagnostic test is crucial for confirming COPD severity?  a) Chest X-ray b) Spirometry (post-bronchodilator FEV1/FVC < 0.70)  ✅  c) Sputum culture d) Complete blood count 
+288. Clubbing of fingers in COPD indicates:  a) Acute infection b) Chronic hypoxemia  ✅  c) Hypercapnia d) Pulmonary edema 
+289. Chest X-ray in COPD is primarily used to:  a) Diagnose emphysema definitively b) Exclude other causes (e.g., heart failure, pneumonia, lung cancer)  ✅  c) Measure lung volumes accurately d) Guide surgical planning 
+290. High-Resolution CT (HRCT) is most useful in:  a) Routine screening for all COPD patients b) Confirming emphysematous changes, detecting bullae, or clarifying uncertain X-ray findings  ✅  c) Diagnosing chronic bronchitis d) Assessing oxygen saturation 
+291. The main goals of pharmacologic therapy in COPD are:  a) Cure the disease b) Relieve symptoms, improve exercise tolerance, prevent exacerbations  ✅  c) Reverse lung damage d) Eliminate need for oxygen 
+292. Which medication class reduces inflammation and exacerbations in severe COPD?  a) Bronchodilators only b) Inhaled Corticosteroids (ICS)  ✅  c) Mucolytics d) Antibiotics 
+293. Long-term oxygen therapy is indicated when PaO2 is:  a) 70 mm Hg or less b) 55 mm Hg or less  ✅  c) 90 mm Hg or less d) Only during exercise 
+294. High oxygen flow in COPD patients can lead to:  a) Improved exercise capacity b) Reduced dyspnea c) Suppressed hypoxic drive, hypoventilation, and hypercapnia  ✅  d) Decreased mucus production 
+295. Bullectomy is indicated for:  a) All COPD patients b) Patients with bullous emphysema where bullae occupy thoracic space without contributing to ventilation  ✅  c) Patients with chronic bronchitis only d) Those with severe pneumonia 
+296. Lung Volume Reduction Surgery aims to:  a) Remove entire lung b) Remove diseased lung parenchyma to reduce hyperinflation and improve elastic recoil  ✅  c) Transplant new lung tissue d) Drain pleural effusion 
+297. Pursed-lip breathing helps by:  a) Increasing respiratory rate b) Slowing expiration, maintaining airway pressure, preventing small airway collapse, and promoting relaxation  ✅  c) Decreasing tidal volume d) Raising PaCO2 
+298. Directed coughing technique includes:  a) Rapid shallow breaths b) Slow maximal inspiration, breath-holding, followed by 2 – 3 coughs  ✅  c) Coughing without inhalation d) Only using abdominal muscles 
+299. When using a peak flow meter, the patient should:  a) Inhale as hard as possible b) Use it at the same time daily and compare readings to personal best  ✅  c) Only use it during attacks d) Notify the doctor if reading is >90% of personal best 
+300. The “green zone” on a peak flow meter indicates:  a) Emergency b) 80 – 100% of personal best  ✅  c) 60 – 80% of personal best d) Below 60% of personal best 
+301. Which is NOT a common complication of COPD?  a) Cor pulmonale b) Pneumothorax c) Respiratory failure d) Left-sided heart failure (Note: Cor pulmonale is right-sided)  ✅  
+302. Status asthmaticus refers to:  a) Mild intermittent asthma b) Severe, persistent bronchospasm unresponsive to conventional therapy  ✅  c) Exercise-induced asthma d) Allergic asthma only 
+303. Bronchiectasis is characterized by:  a) Reversible bronchospasm b) Chronic, irreversible dilation of bronchi/bronchioles due to muscle and elastic tissue destruction  ✅  c) Isolated alveolar damage d) Acute inflammation only 
+304. A key clinical manifestation of bronchiectasis is:  a) No sputum production b) Chronic cough with copious purulent, foul-smelling sputum  ✅  c) Isolated wheezing without cough d) Chest pain without sputum 
+305. Asthma is best described as:  a) An infectious disease b) A chronic inflammatory disease of airways with hyperresponsiveness, edema, and mucus production  ✅  c) A restrictive lung disease d) A vascular disorder 
+306. Which class of asthma medications is used for quick relief?  a) Short-acting β 2-agonists (SABAs) like albuterol  ✅  b) Inhaled corticosteroids c) Long-acting bronchodilators d) Leukotriene modifiers 
+307. A patient with COPD is learning breathing techniques. Which statement indicates the need for further teaching on pursed-lip breathing?  a) “I will breathe out like I’m blowing out a candle.” b) “ I will puff my cheeks out when breathing out. ”  ✅  c)  “ I will not hold my breath while breathing. ”  d)  “ I will use this when I feel short of breath. ”  
+308. The most common cause of tooth loss among adults is:  a) Dental caries b) Periodontal disease (gingivitis and periodontitis)  ✅  c) Oral cancer d) Xerostomia 
+309. Stomatitis is most commonly a side effect of:  a) Poor oral hygiene b) Chemotherapy or radiation therapy  ✅  c) High-sugar diet d) Aging 
+310. Xerostomia (dry mouth) can be caused by all of the following EXCEPT:  a) Radiation therapy b) Increased nasal breathing  ✅  c) Psychopharmacologic agents d) HIV infection 
+311. A recommended management strategy for xerostomia is:  a) Avoiding all oral liquids b) Using oral moisturizing jelly or saliva substitutes  ✅  c) Increasing spicy food intake d) Reducing oral care frequency 
+312. Which of the following is a key nursing intervention for oral cavity disorders?  a) Encouraging hard and crunchy foods b) Educating on preventive mouth care and using baking soda rinses  ✅  c) Limiting fluid intake to reduce salivation d) Avoiding all topical medications 
+313. When ensuring adequate food and fluid intake in a patient with oral disorders, the nurse should:  a) Restrict all oral intake to prevent aspiration b) Record a daily calorie count and monitor nutritional intake  ✅  c) Encourage large meals three times a day d) Avoid enteral feedings 
+314. To support a positive self-image in a patient with oral disfigurement, the nurse should:  a) Avoid discussing appearance changes b) Encourage verbalization of fears and negative feelings  ✅  c) Limit social interactions d) Focus only on physical care 
+315. Which strategy helps minimize pain in patients with oral lesions?  a) Recommending soft or liquid diets and avoiding spicy foods  ✅  b) Encouraging vigorous brushing c) Applying heat directly to lesions d) Withholding all analgesics 
+316. To prevent infection in a patient with oral disorders, the nurse should:  a) Allow unlimited visitors b) Monitor temperature and protect sensitive tissues from trauma  ✅  c) Use non-sterile dressing techniques d) Avoid all antibiotic use 
+317. The most common symptom of esophageal disease is:  a) Dysphagia  ✅  b) Hemoptysis c) Tachycardia d) Abdominal distention 
+318. Which of the following is NOT a disorder of the esophagus?  a) Achalasia b) Hiatal hernia c) Gingivitis  ✅  d) Barrett esophagus 
+319. Achalasia is characterized by:  a) Increased peristalsis and sphincter relaxation b) Absent peristalsis and failure of the esophageal sphincter to relax  ✅  c) Inflammation of the esophageal lining d) Herniation of the stomach into the thorax 
+320. The hallmark symptom of achalasia is:  a) Chest pain of cardiac origin b) Dysphagia, especially with solid foods  ✅  c) Hematemesis d) Diarrhea 
+321. Which diagnostic test is most specific for assessing esophageal pressure and motility in achalasia?  a) Barium swallow b) High-resolution manometry  ✅  c) Chest X-ray d) Complete blood count 
+322. A surgical treatment for achalasia is:  a) Nissen fundoplication b) Heller myotomy (esophagomyotomy)  ✅  c) Gastrectomy d) Cholecystectomy 
+323. Which symptom is common in esophageal spasm?  a) Bradycardia b) Chest pain similar to coronary artery spasm  ✅  c) Hematuria d) Joint pain 
+324. Management of esophageal spasm may include:  a) High-fat diet b) Calcium channel blockers to reduce contractions  ✅  c) Encouraging large meals d) Avoiding all fluids 
+325. The most common type of hiatal hernia is:  a) Paraesophageal b) Sliding (type I)  ✅  c) Incisional d) Congenital 
+326. Which complication is more common with a paraesophageal hernia?  a) Weight gain b) Strangulation, obstruction, or hemorrhage  ✅  c) Improved digestion d) Reduced reflux 
+327. Postoperative nursing care after hiatal hernia repair includes:  a) Encouraging immediate solid food intake b) Advancing diet slowly from liquids to solids and monitoring for dysphagia  ✅  c) Keeping the patient flat in bed d) Limiting pain medication 
+328. GERD is primarily caused by:  a) Increased esophageal motility b) Incompetent lower esophageal sphincter and backflow of gastric contents  ✅  c) Hyperactive pyloric sphincter d) Reduced gastric acid production 
+329. A key lifestyle modification for GERD management is:  a) Eating large meals before bedtime b) Elevating the head of the bed and avoiding late-night eating  ✅  c) Increasing alcohol consumption d) Avoiding weight loss 
+330. Which diagnostic method is commonly used for GERD?  a) MRI b) pH monitoring and endoscopy  ✅  c) Urinalysis d) Pulmonary function test 
+331. Surgical intervention for severe GERD may involve:  a) Heller myotomy b) Nissen fundoplication  ✅  c) Gastric bypass d) Esophagectomy 
+332. Based on the nursing process, a common nursing diagnosis for esophageal disorders is:  a) Excess fluid volume b) Impaired nutritional intake related to dysphagia  ✅  c) Hyperthermia d) Impaired urinary elimination 
+333. A peptic ulcer is best defined as:  a) A benign tumor of the stomach lining b) An excavation (hollowed-out area) in the mucosa of the stomach, pylorus, duodenum, or esophagus  ✅  c) An inflammation of the entire gastrointestinal tract d) A bacterial infection limited to the esophagus 
+334. The most common location for a peptic ulcer is:  a) Stomach b) Duodenum  ✅  c) Esophagus d) Jejunum 
+335. Esophageal ulcers are most commonly caused by:  a) H. pylori infection b) Gastroesophageal reflux disease (GERD)  ✅  c) Excessive alcohol intake d) Zollinger-Ellison syndrome 
+336. Which of the following is a major risk factor for peptic ulcer disease?  a) High-fiber diet b) Use of NSAIDs (e.g., ibuprofen, aspirin)  ✅  c) Vegetarian diet d) Regular exercise 
+337. Which blood type is associated with a higher susceptibility to peptic ulcers?  a) Type A b) Type O  ✅  c) Type B d) Type AB 
+338. Zollinger-Ellison syndrome is characterized by:  a) Hypochlorhydria b) Benign or malignant tumors that secrete excessive gastrin  ✅  c) Autoimmune destruction of gastric mucosa d) Chronic constipation 
+339. Peptic ulcers are associated with all of the following EXCEPT:  a) COPD b) Chronic kidney disease c) Liver cirrhosis d) Hypertension  ✅  
+340. Which symptom is most characteristic of a “silent” peptic ulcer?  a) Severe abdominal pain b) Absence of pain, especially in older adults and NSAID users  ✅  c) Hematemesis d) Diarrhea 
+341. A key sign of perforation in peptic ulcer disease is:  a) Hypothermia b) Severe, sharp upper abdominal pain that may radiate to the shoulder  ✅  c) Hypertension d) Bradycardia 
+342. Which symptom is more typical of a duodenal ulcer than a gastric ulcer?  a) Pain worsens after eating b) Pain relieved by eating or antacids  ✅  c) Weight gain d) Early satiety 
+343. The gold standard for diagnosing H. pylori infection is:  a) Serologic testing b) Endoscopic biopsy with histologic examination  ✅  c) Stool antigen test d) Urea breath test 
+344. A patient with hyperchlorhydria would have:  a) No gastric acid b) Low gastric acid c) High gastric acid levels  ✅  d) Normal gastric acid levels 
+345. Which test is essential for diagnosing Zollinger-Ellison syndrome?  a) Colonoscopy b) Gastric secretory studies  ✅  c) Abdominal ultrasound d) Complete blood count 
+346. First-line pharmacologic therapy for H. pylori-positive peptic ulcers includes:  a) Single antibiotic therapy b) Combination of two antibiotics + a proton pump inhibitor  ✅  c) Antacids only d) H2 blockers alone 
+347. Misoprostol is contraindicated in pregnant women because it can:  a) Cause fetal hypertension b) Soften the cervix and induce miscarriage/premature labor  ✅  c) Lead to fetal hypoglycemia d) Increase risk of congenital defects 
+348. Which medication is used prophylactically in mechanically ventilated patients to prevent stress ulcers?  a) Insulin b) H2 blockers or proton pump inhibitors  ✅  c) Anticoagulants d) Beta-blockers 
+349. Dietary recommendations for peptic ulcer patients include:  a) Eating large, infrequent meals b) Avoiding extremes of temperature, alcohol, and coffee  ✅  c) Increasing spicy food intake d) Fasting during pain episodes 
+350. Smoking worsens peptic ulcer disease by:  a) Increasing gastric mucus production b) Decreasing pancreatic bicarbonate secretion, leading to increased duodenal acidity  ✅  c) Reducing gastric acid secretion d) Promoting H. pylori eradication 
+351. Indications for surgical intervention in peptic ulcer disease include all EXCEPT:  a) Perforation b) Obstruction c) Life-threatening hemorrhage d) First-time H. pylori infection  ✅  
+352. A vagotomy aims to:  a) Increase gastric acid secretion b) Reduce acid secretion by transecting vagal nerves  ✅  c) Remove the entire stomach d) Repair a hiatal hernia 
+353. Which surgical procedure involves removing the antrum and connecting the stomach to the jejunum?  a) Billroth I b) Billroth II (gastrojejunostomy)  ✅  c) Pyloroplasty d) Nissen fundoplication 
+354. The main benefit of laparoscopic surgery over open abdominal surgery is:  a) Longer hospital stay b) Decreased postoperative pain, bleeding, and recovery time  ✅  c) Higher risk of infection d) Requirement for larger incisions 
+355. Hematemesis with “coffee grounds” appearance is due to:  a) Fresh bleeding b) Oxidation of hemoglobin to methemoglobin  ✅  c) Lower GI bleeding d) Biliary obstruction 
+356. Which complication requires immediate surgical intervention?  a) Mild dyspepsia b) Perforation  ✅  c) Occult blood in stool d) Gastric outlet obstruction 
+357. Gastric outlet obstruction is confirmed when NG tube aspirate exceeds:  a) 100 mL b) 400 mL  ✅  c) 800 mL d) 1000 mL 
+358. A key nursing diagnosis for a patient with peptic ulcer disease is:  a) Impaired gas exchange b) Acute pain related to gastric acid secretion on damaged tissue  ✅  c) Fluid volume excess d) Hyperthermia 
+359. To reduce anxiety in a peptic ulcer patient, the nurse should:  a) Limit explanations of procedures b) Administer medications on schedule and teach relaxation techniques  ✅  c) Avoid family involvement d) Encourage withholding pain medication 
+360. Patient education for home care should emphasize:  a) Stopping medications once pain subsides b) Continuing medications as prescribed and avoiding NSAIDs/alcohol  ✅  c) Increasing aspirin use for pain d) Eating large meals before bedtime 
+361. Maintenance therapy with H2 blockers is recommended for patients with:  a) First-time, uncomplicated ulcers b) Recurrent ulcers (2 – 3 times per year) or prior complications  ✅  c) No history of smoking d) Normal gastric acid levels 
+362. Which action reduces the likelihood of ulcer recurrence?  a) Increasing coffee intake b) Avoiding smoking, alcohol, and ulcerogenic medications  ✅  c) Using NSAIDs regularly d) Skipping meals 
+363. Hepatitis is best defined as:  a) A bacterial infection of the liver b) An inflammation of the liver caused by infectious viruses or noninfectious agents  ✅  c) A genetic disorder affecting bile production d) A type of gallbladder stone 
+364. Which types of hepatitis are transmitted primarily via the fecal–oral route?  a) Hepatitis B and C b) Hepatitis A and E  ✅  c) Hepatitis D and B d) Hepatitis C and D 
+365. Which hepatitis type is known as "infectious hepatitis"?  a) Hepatitis A  ✅  b) Hepatitis B c) Hepatitis C d) Hepatitis E 
+366. Hepatitis A is transmitted through:  a) Blood transfusions b) Fecal – oral route, contaminated food/water, poor hygiene  ✅  c) Sexual contact only d) Airborne droplets 
+367. A characteristic symptom of HAV is:  a) Chronic liver failure b) An aversion to cigarette smoke and strong odors  ✅  c) Persistent jaundice d) High-grade fever with rash 
+368. Prevention of HAV includes:  a) Avoiding all physical activity b) Vaccination, hand hygiene, safe water, and sewage control  ✅  c) Blood screening d) Use of antiviral medications daily 
+369. Hepatitis B can lead to:  a) Only acute illness with full recovery b) Chronic hepatitis, cirrhosis, and hepatocellular carcinoma  ✅  c) Gallstones d) Pancreatitis 
+370. Which body fluids can transmit HBV?  a) Sweat and tears only b) Blood, saliva, semen, and vaginal secretions  ✅  c) Urine only d) Respiratory droplets 
+371. The hepatitis B vaccine is typically administered in:  a) One dose b) Three doses over 6 months  ✅  c) Five doses annually d) Only to healthcare workers 
+372. Medical management of HBV may include:  a) Antibiotics only b) Alpha-interferon and antiviral agents like entecavir  ✅  c) Surgical removal of the liver d) High-fat diet 
+373. Hepatitis C is most commonly transmitted via:  a) Fecal–oral route b) Percutaneous and permucosal routes (e.g., blood exposure)  ✅  c) Contaminated water d) Airborne transmission 
+374. Which test is used to detect recent HCV exposure?  a) Liver biopsy b) HCV RNA testing  ✅  c) Abdominal X-ray d) Stool antigen test 
+375. A key pharmacologic treatment for HCV is:  a) Vitamin supplements b) Combination therapy with peginterferon and ribavirin  ✅  c) Antibiotics d) Antifungals 
+376. Hepatitis D infection can only occur in patients who:  a) Have never had hepatitis b) Are already infected with Hepatitis B  ✅  c) Have gallbladder disease d) Are immunized against HAV 
+377. Hepatitis E is characterized by:  a) Chronic infection b) Abrupt onset with jaundice, transmitted via contaminated water  ✅  c) Bloodborne transmission only d) Being preventable by HBV vaccine 
+378. Dietary management for hepatitis includes:  a) High-fat, low-protein meals b) High-calorie, high-protein, small frequent meals, restricted fat  ✅  c) Fasting during acute phase d) Increased alcohol intake 
+379. Which measure helps prevent Hepatitis B and C?  a) Drinking boiled water only b) Using needleless IV systems, standard precautions, avoiding high-risk behaviors  ✅  c) Avoiding all physical contact d) Taking aspirin daily 
+380. Cholecystitis is defined as:  a) Inflammation of the liver b) Inflammation of the gallbladder  ✅  c) Obstruction of the pancreas d) Infection of the bile ducts 
+381. The two major types of gallstones are:  a) Calcium and bilirubin stones b) Cholesterol stones and pigment stones  ✅  c) Infectious and metabolic stones d) Solid and liquid stones 
+382. Cholesterol gallstones form due to:  a) Increased bile acid synthesis b) Decreased bile acid synthesis and increased cholesterol saturation in bile  ✅  c) Bacterial infection of the gallbladder d) Excessive water intake 
+383. Biliary colic is characterized by:  a) Dull, constant lower abdominal pain b) Excruciating upper right abdominal pain radiating to the back or shoulder  ✅  c) Left-sided chest pain d) Generalized joint pain 
+384. Jaundice in cholecystitis occurs due to:  a) Excessive bile production b) Obstruction of the common bile duct  ✅  c) Decreased bilirubin excretion d) Vitamin deficiency 
+385. A patient with prolonged biliary obstruction may develop bleeding due to deficiency of:  a) Vitamin C b) Vitamin K  ✅  c) Vitamin B12 d) Vitamin D 
+386. Changes in urine and stool color due to biliary obstruction include:  a) Pale urine and black stools b) Dark urine and clay-colored stools  ✅  c) Red urine and green stools d) Clear urine and yellow stools 
+387. The most common diagnostic test for detecting gallstones is:  a) CT scan b) Abdominal ultrasonography  ✅  c) MRI d) Blood culture 
+388. Which test is used to assess gallbladder function and detect stones?  a) Barium swallow b) Oral cholecystography  ✅  c) Colonoscopy d) Pulmonary function test 
+389. Initial medical management for acute cholecystitis includes:  a) Immediate surgery b) Rest, IV fluids, nasogastric suction, analgesia, antibiotics  ✅  c) High-fat diet to stimulate bile flow d) Antiviral therapy 
+390. Pharmacologic dissolution of gallstones may involve:  a) Antibiotics b) Ursodeoxycholic acid (UDCA)  ✅  c) Insulin d) Chemotherapy 
+391. The definitive surgical treatment for symptomatic gallstones is:  a) Lithotripsy b) Cholecystectomy (often laparoscopic)  ✅  c) Appendectomy d) Gastric bypass 
+392. A key nursing diagnosis for a postoperative cholecystectomy patient is:  a) Impaired urinary elimination b) Acute pain related to surgical incision  ✅  c) Fluid volume excess d) Ineffective airway clearance 
+393. Postoperative nursing interventions include monitoring for:  a) Hyperglycemia b) Bleeding, infection, and GI symptoms related to biliary leak  ✅  c) Hypertension d) Renal failure 
+394. Patient education after gallbladder surgery should include:  a) Increasing fat intake b) Incision care, dietary modifications, and signs of infection  ✅  c) Avoiding all physical activity for 6 months d) Stopping all medications immediately 
+395. The appendix is attached to which part of the intestine?  a) Ileum b) Cecum  ✅  c) Jejunum d) Sigmoid colon 
+396. Appendicitis is most common in which age group?  a) 0–5 years b) 10 – 30 years  ✅  c) 40 – 60 years d) Over 70 years 
+397. Appendicitis is slightly more common in:  a) Females b) Males  ✅  c) Equally in both sexes d) Only in children 
+398. The most common cause of appendiceal obstruction is:  a) Foreign body b) Fecalith (hardened stool)  ✅  c) Tumor d) Parasitic infection 
+399. Untreated appendicitis can lead to:  a) Improved drainage b) Gangrene or perforation  ✅  c) Spontaneous healing d) Chronic constipation 
+400. Which pathophysiological event occurs first in appendicitis?  a) Bacterial overgrowth b) Obstruction of the appendix lumen  ✅  c) Perforation d) Systemic infection 
+401. The classic early symptom of appendicitis is:  a) Right lower quadrant pain b) Vague periumbilical pain  ✅  c) Left upper quadrant pain d) Back pain 
+402. McBurney’s point is located in the:  a) Left lower quadrant b) Right lower quadrant  ✅  c) Epigastric region d) Suprapubic area 
+403. Rovsing’s sign is positive when:  a) Pain occurs in the left lower quadrant when the right is pressed b) Pain occurs in the right lower quadrant when the left is pressed  ✅  c) Pain occurs in the umbilicus when coughing d) Pain occurs in the shoulder when lying down 
+404. Which medication should be avoided in suspected appendicitis?  a) Antibiotics b) Laxatives or cathartics  ✅  c) Analgesics d) Antiemetics 
+405. The most common laboratory finding in appendicitis is:  a) Low hemoglobin b) Elevated WBC count with neutrophilia  ✅  c) Elevated blood glucose d) Low platelet count 
+406. C-reactive protein (CRP) typically rises within:  a) 1–2 hours b) First 12 hours  ✅  c) 24 – 48 hours d) 72 hours 
+407. Which imaging study is preferred for diagnosing appendicitis?  a) X-ray b) CT scan or abdominal ultrasound  ✅  c) MRI d) PET scan 
+408. A pregnancy test is important in female patients to rule out:  a) Ovarian cyst b) Ectopic pregnancy  ✅  c) Uterine fibroids d) Pelvic inflammatory disease 
+409. The definitive treatment for appendicitis is:  a) Antibiotics alone b) Appendectomy  ✅  c) Pain management d) Bowel rest 
+410. Which surgical approach is preferred for appendectomy?  a) Open laparotomy b) Laparoscopic appendectomy  ✅  c) Robotic surgery d) Endoscopic resection 
+411. Antibiotic therapy for perforated appendicitis typically lasts:  a) <24 hours b) Up to 5 days  ✅  c) 10 – 14 days d) 1 month 
+412. If an abscess forms, initial management includes:  a) Immediate surgery b) Drainage and antibiotics, followed by delayed appendectomy  ✅  c) Observation only d) High-fiber diet 
+413. Preoperatively, nurses should avoid administering:  a) IV fluids b) Enemas or laxatives  ✅  c) Antibiotics d) Analgesics 
+414. Postoperatively, patients should be placed in which position?  a) Supine b) High Fowler ’ s position  ✅  c) Trendelenburg d) Left lateral 
+415. To prevent atelectasis, patients should be encouraged to:  a) Limit movement b) Use incentive spirometer every 2 hours while awake  ✅  c) Avoid deep breathing d) Restrict fluids 
+416. Same-day discharge is possible after laparoscopic appendectomy if the patient has:  a) Severe pain b) Normal temperature and minimal pain  ✅  c) No bowel sounds d) High fever 
+417. Colorectal cancer is the ______ leading cause of cancer death.  a) First b) Third  ✅  c) Fifth d) Tenth 
+418. Which is NOT a risk factor for colorectal cancer?  a) High-fat diet b) High-fiber diet  ✅  c) Family history d) Inflammatory bowel disease 
+419. The most common symptom of colorectal cancer is:  a) Weight gain b) Change in bowel habits  ✅  c) Hypertension d) Skin rash 
+420. Screening for colorectal cancer in average-risk adults should begin at age:  a) 40 b) 45 – 50  ✅  c) 60 d) 70 
+421. The gold standard for colorectal cancer screening is:  a) Fecal occult blood test b) Colonoscopy  ✅  c) CT colonography d) Sigmoidoscopy 
+422. Which tumor marker is used in colorectal cancer?  a) PSA b) Carcinoembryonic antigen (CEA)  ✅  c) CA-125 d) AFP 
+423. The primary treatment for localized colorectal cancer is:  a) Chemotherapy b) Surgery  ✅  c) Radiation therapy d) Immunotherapy 
+424. Preoperative bowel preparation may include:  a) High-residue diet b) Low-residue diet, enemas, and antibiotics  ✅  c) Increased fluid restriction d) No dietary changes 
+425. A key nursing diagnosis for a patient undergoing colorectal surgery is:  a) Impaired gas exchange b) Risk for infection related to bowel surgery  ✅  c) Fluid volume excess d) Impaired mobility 
+426. After appendectomy, patients should avoid heavy lifting for:  a) 1 week b) 2 – 4 weeks  ✅  c) 6 weeks d) 3 months 
+427. Patients should report which sign of infection postoperatively?  a) Mild itching b) Fever, swelling, or discharge at incision site  ✅  c) Slight redness d) Temporary numbness 
+428. Postoperative care for colorectal cancer patients includes monitoring for:  a) Hyperglycemia b) Hypovolemia, infection, and skin integrity  ✅  c) Hypertension d) Urinary retention only 
+`;
+
+const game = {
+    allQuestions: [],
+    questions: [],
+    idx: 0,
+    score: 0,
+    streak: 0,
+    answeredCount: 0,
+    isExam: false,
+    timeLeft: 3600,
+    timerInterval: null,
+    
+    // Peer Pressure Logic
+    peerProgress: 0,
+    
+    init: function() {
+        this.parseQuestions();
+        document.getElementById('start-screen').classList.remove('hidden');
+    },
+
+    parseQuestions: function() {
+        const lines = rawTextData.split('\n').filter(line => line.trim().length > 5);
+        
+        this.allQuestions = lines.map(line => {
+            const match = line.match(/^(\d+)\.\s+(.+?)(?=\s+[a-d]\))/);
+            if (!match) return null;
+
+            const qNum = match[1];
+            const qText = match[2];
+            
+            const optionsRaw = line.substring(match[0].length); 
+            const parts = optionsRaw.split(/\s+(?=[a-d]\))/);
+            
+            let options = [];
+            let correctIndex = 0;
+
+            parts.forEach((part, index) => {
+                let clean = part.replace(/^[a-d]\)\s*/, '').trim();
+                if(clean.includes('✅')) {
+                    correctIndex = index;
+                    clean = clean.replace('✅', '').trim();
+                }
+                options.push(clean);
+            });
+
+            return {
+                id: qNum,
+                text: qText,
+                options: options,
+                answer: correctIndex,
+                userAnswer: null
+            };
+        }).filter(q => q !== null);
+    },
+
+    start: function(isExam) {
+        this.isExam = isExam;
+        
+        // 1. Get Custom Settings
+        const countInput = document.getElementById('config-q-count').value;
+        const timerInput = document.getElementById('config-timer').value;
+        
+        let qCount = parseInt(countInput);
+        if(isNaN(qCount) || qCount < 1) qCount = 50;
+        if(qCount > this.allQuestions.length) qCount = this.allQuestions.length;
+
+        // 2. Select Subset of Questions (Shuffle then Slice)
+        const shuffled = [...this.allQuestions].sort(() => 0.5 - Math.random());
+        this.questions = shuffled.slice(0, qCount);
+        
+        // Reset Game State
+        this.idx = 0;
+        this.score = 0;
+        this.streak = 0;
+        this.answeredCount = 0;
+        this.peerProgress = 0;
+        
+        // Update UI Text
+        document.getElementById('remaining-val').innerText = this.questions.length;
+        document.getElementById('progress-val').innerText = `0/${this.questions.length}`;
+
+        // 3. Handle Timer
+        if (isExam) {
+            let mins = parseInt(timerInput);
+            if(isNaN(mins) || mins < 1) mins = 60;
+            this.timeLeft = mins * 60;
+            
+            document.getElementById('timer-badge').classList.add('active');
+            this.startTimer();
+        } else {
+            document.getElementById('timer-badge').classList.remove('active');
+        }
+
+        // 4. Update Badge
+        document.getElementById('mode-badge').innerText = isExam ? "EXAM MODE" : "STUDY MODE";
+        document.getElementById('mode-badge').style.background = isExam ? "#ef4444" : "#22c55e";
+
+        // 5. Launch
+        document.getElementById('start-screen').classList.add('hidden');
+        this.startPeerSimulation();
+        this.render();
+    },
+
+    startTimer: function() {
+        if(this.timerInterval) clearInterval(this.timerInterval);
+        this.timerInterval = setInterval(() => {
+            this.timeLeft--;
+            const m = Math.floor(this.timeLeft / 60);
+            const s = this.timeLeft % 60;
+            document.getElementById('timer-badge').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+            if (this.timeLeft <= 0) this.finish();
+        }, 1000);
+    },
+
+    startPeerSimulation: function() {
+        // Simulates the "Average Nursing Student"
+        setInterval(() => {
+            if (this.peerProgress < 100) {
+                // Peer moves slightly faster in Exam mode
+                const speed = this.isExam ? 0.08 : 0.03; 
+                this.peerProgress += (Math.random() * speed) + 0.01;
+                
+                // Cap at 95% (nobody is perfect)
+                if(this.peerProgress > 95) this.peerProgress = 95;
+
+                const peerPct = this.peerProgress;
+                const userPct = (this.answeredCount / this.questions.length) * 100;
+                
+                document.getElementById('racer-peer').style.left = peerPct + '%';
+                
+                // Rank Logic
+                let msg = "";
+                let rank = "Average";
+                
+                if (userPct > peerPct + 5) {
+                    msg = "You are dominating the class!";
+                    rank = "Top 5%";
+                } else if (userPct > peerPct) {
+                    msg = "You're slightly ahead.";
+                    rank = "Above Avg";
+                } else if (userPct < peerPct - 10) {
+                    msg = "⚠️ FALLING BEHIND! Pick up the pace!";
+                    rank = "Bottom 30%";
+                } else {
+                    msg = "Neck and neck with the average...";
+                }
+
+                document.getElementById('peer-msg').innerText = msg;
+                document.getElementById('rank-display').innerText = rank;
+            }
+        }, 1000);
+    },
+
+    render: function() {
+        const q = this.questions[this.idx];
+        document.getElementById('question-count').innerText = `Question ${this.idx + 1} of ${this.questions.length}`;
+        document.getElementById('question-text').innerText = q.text;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('div');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            
+            // Re-render state if already answered
+            if (q.userAnswer !== null) {
+                btn.classList.add('disabled');
+                if (i === q.answer) btn.classList.add('correct');
+                else if (i === q.userAnswer) btn.classList.add('incorrect');
+            } else {
+                btn.onclick = () => this.select(i);
+            }
+            container.appendChild(btn);
+        });
+
+        // Move racer
+        const userPct = (this.answeredCount / this.questions.length) * 100;
+        document.getElementById('racer-user').style.left = userPct + '%';
+    },
+
+    select: function(i) {
+        const q = this.questions[this.idx];
+        if (q.userAnswer !== null) return;
+        
+        q.userAnswer = i;
+        this.answeredCount++;
+        
+        if (i === q.answer) {
+            this.score++;
+            this.streak++;
+        } else {
+            this.streak = 0;
+        }
+
+        this.updateStats();
+        this.render(); // Re-render to show colors
+    },
+
+    updateStats: function() {
+        const acc = Math.round((this.score / this.answeredCount) * 100) || 0;
+        document.getElementById('score-val').innerText = acc + '%';
+        document.getElementById('streak-val').innerText = this.streak;
+        document.getElementById('progress-val').innerText = `${this.answeredCount}/${this.questions.length}`;
+        document.getElementById('remaining-val').innerText = this.questions.length - this.answeredCount;
+    },
+
+    next: function() {
+        if (this.idx < this.questions.length - 1) {
+            this.idx++;
+            this.render();
+        } else {
+            this.finish();
+        }
+    },
+
+    prev: function() {
+        if (this.idx > 0) {
+            this.idx--;
+            this.render();
+        }
+    },
+
+    finish: function() {
+        clearInterval(this.timerInterval);
+        const finalAcc = Math.round((this.score / this.questions.length) * 100);
+        document.getElementById('results-screen').classList.remove('hidden');
+        document.getElementById('final-score').innerText = finalAcc + '%';
+        
+        let msg = "Keep studying.";
+        if (finalAcc > 90) msg = " outstanding! You are ready for the boards.";
+        else if (finalAcc > 75) msg = "Great job! Just review a few misses.";
+        document.getElementById('final-msg').innerText = msg;
+    }
+};
+
+window.onload = () => game.init();
+</script>
+</body>
+</html>
