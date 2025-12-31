@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ADULT NURSING CARE | 428 Q-Bank</title>
     <style>
         :root {
@@ -16,40 +16,42 @@
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--light);
             margin: 0;
             padding: 0;
             color: var(--dark);
-            height: 100vh;
+            height: 100vh; /* Viewport height for desktop app-feel */
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Prevent body scroll on desktop */
         }
 
         /* HEADER */
         header {
             background: var(--white);
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: var(--shadow);
-            z-index: 10;
+            z-index: 20;
             border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
         }
 
         /* RGB EFFECT TITLE */
         h1 { 
             margin: 0; 
-            font-size: 1.5rem; 
+            font-size: 1.25rem; 
             font-weight: 900; 
             display: flex; 
             align-items: center; 
-            gap: 10px;
-            letter-spacing: 1px;
+            gap: 8px;
+            letter-spacing: 0.5px;
             
             /* RGB Gradient Animation */
             background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
@@ -68,7 +70,7 @@
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
 
         .mode-badge {
@@ -76,22 +78,24 @@
             color: var(--dark);
             padding: 0.25rem 0.75rem;
             border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
             border: 1px solid #e2e8f0;
+            white-space: nowrap;
         }
 
         .btn-exit {
             background: transparent;
             border: 1px solid var(--accent);
             color: var(--accent);
-            padding: 5px 15px;
+            padding: 6px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         .btn-exit:hover {
             background: var(--accent);
@@ -108,7 +112,7 @@
 
         /* SIDEBAR (Stats & Pressure) */
         .sidebar {
-            width: 320px;
+            width: 300px;
             background: var(--white);
             border-right: 1px solid #e2e8f0;
             padding: 1.5rem;
@@ -116,7 +120,8 @@
             flex-direction: column;
             gap: 1.5rem;
             overflow-y: auto;
-            z-index: 5;
+            z-index: 10;
+            flex-shrink: 0;
         }
 
         .widget {
@@ -149,8 +154,8 @@
             border: 1px solid #e2e8f0;
         }
 
-        .stat-val { font-size: 1.25rem; font-weight: 800; color: var(--primary); }
-        .stat-lbl { font-size: 0.7rem; color: #64748b; }
+        .stat-val { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+        .stat-lbl { font-size: 0.65rem; color: #64748b; text-transform: uppercase; }
 
         /* PEER PRESSURE WIDGET */
         .peer-pressure {
@@ -166,12 +171,12 @@
             align-items: center;
             color: var(--accent);
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 10px;
         }
 
         .race-track {
-            height: 12px;
+            height: 10px;
             background: #e2e8f0;
             border-radius: 6px;
             position: relative;
@@ -180,7 +185,7 @@
 
         .racer {
             position: absolute;
-            top: -4px;
+            top: -5px;
             width: 20px;
             height: 20px;
             border-radius: 50%;
@@ -189,8 +194,8 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        .racer.user { background: var(--primary); top: -4px; z-index: 2; }
-        .racer.peer { background: var(--accent); top: -4px; z-index: 1; opacity: 0.8; }
+        .racer.user { background: var(--primary); z-index: 2; }
+        .racer.peer { background: var(--accent); z-index: 1; opacity: 0.8; }
 
         .pressure-msg {
             font-size: 0.75rem;
@@ -210,6 +215,7 @@
             flex-direction: column;
             align-items: center;
             background-color: #f1f5f9;
+            scroll-behavior: smooth;
         }
 
         .card {
@@ -218,8 +224,9 @@
             width: 100%;
             border-radius: 16px;
             box-shadow: var(--shadow);
-            padding: 2rem;
+            padding: 2.5rem;
             position: relative;
+            margin-bottom: 2rem; /* Space for scrolling */
         }
 
         .timer-float {
@@ -234,6 +241,7 @@
             font-size: 0.9rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             display: none;
+            z-index: 5;
         }
         
         .timer-float.active { display: block; animation: pulse 2s infinite; }
@@ -245,6 +253,7 @@
             font-weight: 600;
             margin-bottom: 1rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .question-text {
@@ -252,7 +261,7 @@
             line-height: 1.6;
             color: var(--dark);
             margin-bottom: 2rem;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .options-list { display: flex; flex-direction: column; gap: 0.75rem; }
@@ -261,14 +270,20 @@
             padding: 1rem 1.25rem;
             border: 2px solid #e2e8f0;
             background: white;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: left;
             cursor: pointer;
             font-size: 1rem;
             transition: all 0.2s;
             position: relative;
             color: var(--dark);
+            /* Improve touch target */
+            min-height: 54px;
+            display: flex;
+            align-items: center;
         }
+
+        .option-btn:active { transform: scale(0.99); }
 
         .option-btn:hover:not(.disabled) {
             border-color: var(--primary);
@@ -286,6 +301,7 @@
             position: absolute;
             right: 15px;
             font-weight: bold;
+            font-size: 1.2rem;
         }
 
         .option-btn.incorrect {
@@ -299,6 +315,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
 
         .btn {
@@ -308,6 +325,9 @@
             font-weight: 600;
             cursor: pointer;
             transition: opacity 0.2s;
+            font-size: 1rem;
+            flex: 1; /* Allow stretching on mobile */
+            max-width: 200px;
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: #cbd5e1; color: var(--dark); }
@@ -318,41 +338,45 @@
             background: var(--white);
             color: #64748b;
             text-align: center;
-            padding: 10px;
+            padding: 12px;
             font-size: 0.75rem;
             border-top: 1px solid #e2e8f0;
             font-weight: 600;
             letter-spacing: 1px;
+            flex-shrink: 0;
         }
 
         /* MODALS */
         .overlay {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 100;
+            padding: 20px; /* Prevent edge touching on mobile */
         }
         
         .modal {
             background: white;
-            padding: 2.5rem;
+            padding: 2rem;
             border-radius: 16px;
             max-width: 500px;
-            width: 90%;
+            width: 100%;
             text-align: center;
-            box-shadow: var(--shadow);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         /* Custom Input Styles */
         .config-box {
             background: #f8fafc;
-            padding: 20px;
+            padding: 1.5rem;
             border-radius: 12px;
-            margin: 20px 0;
+            margin: 1.5rem 0;
             text-align: left;
             border: 1px solid #e2e8f0;
         }
@@ -362,18 +386,19 @@
             font-size: 0.85rem;
             font-weight: 700;
             color: var(--dark);
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
         }
         
         .config-input {
             width: 100%;
-            padding: 10px;
+            padding: 0.75rem;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             font-size: 1rem;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
             transition: border-color 0.2s;
+            appearance: none; /* Remove default styling on iOS */
         }
         
         .config-input:focus {
@@ -383,12 +408,84 @@
 
         .hidden { display: none !important; }
 
-        /* RESPONSIVE */
+        /* --- RESPONSIVE BREAKPOINTS --- */
+
+        /* TABLET & MOBILE LAYOUT */
+        @media (max-width: 1024px) {
+            body { height: auto; min-height: 100vh; overflow-y: auto; } /* Allow natural scroll */
+            .layout { flex-direction: column; overflow: visible; }
+            
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                border-right: none; 
+                border-bottom: 1px solid #e2e8f0; 
+                padding: 1rem;
+                flex-direction: row; /* Horizontal layout for widgets */
+                overflow-x: auto; /* Allow horizontal scroll if needed */
+                align-items: stretch;
+            }
+            
+            .widget { 
+                min-width: 250px; 
+                flex: 1;
+            }
+            
+            .quiz-area { overflow: visible; padding: 1.5rem; }
+        }
+
+        /* MOBILE PHONES */
         @media (max-width: 768px) {
-            .layout { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e2e8f0; }
-            .quiz-area { overflow: visible; }
-            h1 { font-size: 1.1rem; }
+            .sidebar { 
+                flex-direction: column; /* Stack widgets on phones */
+                gap: 1rem;
+            }
+            
+            .widget { min-width: 100%; }
+            
+            /* Optimize Stats Grid for Mobile (Horizontal strip) */
+            .stat-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .stat-item { padding: 5px; }
+            .stat-val { font-size: 1rem; }
+            .stat-lbl { font-size: 0.6rem; }
+
+            .quiz-area { padding: 1rem 0.5rem; }
+            
+            .card { 
+                padding: 1.5rem 1rem; 
+                border-radius: 12px;
+                box-shadow: none; /* Simplify visuals */
+                border: 1px solid #e2e8f0;
+            }
+
+            .question-text { font-size: 1.1rem; }
+            
+            .option-btn {
+                padding: 0.85rem;
+                font-size: 0.95rem;
+                min-height: 48px;
+            }
+
+            h1 { font-size: 1rem; }
+            .mode-badge { display: none; } /* Hide badge on very small screens to save space */
+            
+            .controls {
+                flex-direction: row; /* Keep side by side */
+            }
+            
+            .btn {
+                padding: 0.85rem; /* Larger touch target */
+                max-width: none;
+            }
+        }
+
+        /* VERY SMALL SCREENS */
+        @media (max-width: 380px) {
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            h1 { font-size: 0.9rem; }
+            .btn-exit { padding: 4px 8px; font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -411,7 +508,7 @@
                     <span>🔥 COMPETITION</span>
                     <span id="rank-display">Rank: Avg</span>
                 </div>
-                <div style="font-size:0.8rem; color:#666;">Global Nursing Average vs. You</div>
+                <div style="font-size:0.75rem; color:#666;">Global Nursing Average vs. You</div>
                 
                 <div class="race-track">
                     <div id="racer-peer" class="racer peer" style="left: 0%" title="Global Average"></div>
@@ -435,11 +532,11 @@
                     </div>
                     <div class="stat-item">
                         <div class="stat-val" id="progress-val">0/428</div>
-                        <div class="stat-lbl">Completed</div>
+                        <div class="stat-lbl">Done</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-val" id="remaining-val">428</div>
-                        <div class="stat-lbl">Remaining</div>
+                        <div class="stat-lbl">Left</div>
                     </div>
                 </div>
             </div>
@@ -484,8 +581,8 @@
             </div>
 
             <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="btn btn-secondary" onclick="game.start(false)">Study Mode (Relaxed)</button>
-                <button class="btn btn-primary" style="background: var(--accent);" onclick="game.start(true)">Exam Mode (Timer + Pressure)</button>
+                <button class="btn btn-secondary" onclick="game.start(false)">Study Mode</button>
+                <button class="btn btn-primary" style="background: var(--accent);" onclick="game.start(true)">Exam Mode</button>
             </div>
             <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 15px;">Exam mode enables strict time limits and aggressive peer comparison.</p>
         </div>
