@@ -406,6 +406,32 @@
             outline: none;
         }
 
+        /* Shuffle Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .checkbox-container input {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
         .hidden { display: none !important; }
 
         /* --- RESPONSIVE BREAKPOINTS --- */
@@ -499,6 +525,9 @@
         </div>
     </header>
 
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
     <div class="layout">
         <!-- SIDEBAR -->
         <aside class="sidebar">
@@ -573,6 +602,11 @@
             <p>428 Comprehensive Questions loaded.</p>
             
             <div class="config-box">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="config-shuffle" checked>
+                    <strong>Shuffle Questions</strong>
+                </label>
+
                 <label class="config-label">Number of Questions (Max 428):</label>
                 <input type="number" id="config-q-count" class="config-input" value="50" min="1" max="428">
                 
@@ -599,6 +633,113 @@
     </div>
 
 <script>
+// --- SOUND FX MODULE (Web Audio API) ---
+const SoundFX = {
+    ctx: null,
+    init: function() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    },
+    playTone: function(freq, type, duration) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+    },
+    playCorrect: function() {
+        this.init();
+        // High pitched "Ding" - Sine wave
+        this.playTone(600, 'sine', 0.1);
+        setTimeout(() => this.playTone(800, 'sine', 0.2), 100);
+    },
+    playIncorrect: function() {
+        this.init();
+        // Low pitched "Buzz" - Sawtooth
+        this.playTone(150, 'sawtooth', 0.3);
+        setTimeout(() => this.playTone(100, 'sawtooth', 0.3), 100);
+    },
+    playWin: function() {
+        this.init();
+        // Fanfare
+        [400, 500, 600, 800].forEach((freq, i) => {
+            setTimeout(() => this.playTone(freq, 'square', 0.2), i * 150);
+        });
+    }
+};
+
+// --- CONFETTI MODULE (Canvas) ---
+const ConfettiFX = {
+    canvas: null,
+    ctx: null,
+    particles: [],
+    animationId: null,
+    
+    init: function() {
+        this.canvas = document.getElementById('confetti-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    },
+    
+    resize: function() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    },
+    
+    fire: function(amount = 50) {
+        const colors = ['#2563eb', '#ef4444', '#22c55e', '#facc15', '#a855f7'];
+        for (let i = 0; i < amount; i++) {
+            this.particles.push({
+                x: window.innerWidth / 2,
+                y: window.innerHeight / 2,
+                vx: (Math.random() - 0.5) * 15,
+                vy: (Math.random() - 0.5) * 15 - 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: Math.random() * 8 + 4,
+                life: 100
+            });
+        }
+        if (!this.animationId) this.loop();
+    },
+    
+    loop: function() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        for (let i = 0; i < this.particles.length; i++) {
+            const p = this.particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.5; // Gravity
+            p.life--;
+            
+            this.ctx.fillStyle = p.color;
+            this.ctx.globalAlpha = p.life / 100;
+            this.ctx.fillRect(p.x, p.y, p.size, p.size);
+            
+            if (p.life <= 0 || p.y > this.canvas.height) {
+                this.particles.splice(i, 1);
+                i--;
+            }
+        }
+        
+        this.ctx.globalAlpha = 1;
+        
+        if (this.particles.length > 0) {
+            this.animationId = requestAnimationFrame(() => this.loop());
+        } else {
+            this.animationId = null;
+        }
+    }
+};
+
 // --- RAW DATA ---
 const rawTextData = `
 1. What defines epilepsy?  a) A single provoked seizure b) Two or more unprovoked seizures occurring more than 24 hours apart  ✅  c) Any episode of abnormal sensory activity d) A seizure lasting more than 5 minutes 
@@ -1047,6 +1188,7 @@ const game = {
     
     init: function() {
         this.parseQuestions();
+        ConfettiFX.init();
         document.getElementById('start-screen').classList.remove('hidden');
     },
 
@@ -1088,17 +1230,24 @@ const game = {
     start: function(isExam) {
         this.isExam = isExam;
         
+        // Initialize Audio Context (must happen on user gesture)
+        SoundFX.init();
+
         // 1. Get Custom Settings
         const countInput = document.getElementById('config-q-count').value;
         const timerInput = document.getElementById('config-timer').value;
+        const shuffle = document.getElementById('config-shuffle').checked;
         
         let qCount = parseInt(countInput);
         if(isNaN(qCount) || qCount < 1) qCount = 50;
         if(qCount > this.allQuestions.length) qCount = this.allQuestions.length;
 
-        // 2. Select Subset of Questions (Shuffle then Slice)
-        const shuffled = [...this.allQuestions].sort(() => 0.5 - Math.random());
-        this.questions = shuffled.slice(0, qCount);
+        // 2. Select Subset of Questions (Shuffle or Sequential)
+        let pool = [...this.allQuestions];
+        if (shuffle) {
+            pool.sort(() => 0.5 - Math.random());
+        }
+        this.questions = pool.slice(0, qCount);
         
         // Reset Game State
         this.idx = 0;
@@ -1222,8 +1371,11 @@ const game = {
         if (i === q.answer) {
             this.score++;
             this.streak++;
+            SoundFX.playCorrect();
+            ConfettiFX.fire(30); // Burst of confetti
         } else {
             this.streak = 0;
+            SoundFX.playIncorrect();
         }
 
         this.updateStats();
@@ -1264,6 +1416,11 @@ const game = {
         if (finalAcc > 90) msg = " outstanding! You are ready for the boards.";
         else if (finalAcc > 75) msg = "Great job! Just review a few misses.";
         document.getElementById('final-msg').innerText = msg;
+
+        // Celebrate Finish
+        SoundFX.playWin();
+        ConfettiFX.fire(200); // Massive burst
+        setTimeout(() => ConfettiFX.fire(200), 1000); // Another burst
     }
 };
 
